@@ -98,7 +98,7 @@ class Session implements ArrayAccess {
     $this->requests_counter = 1;
     $this->last_regeneration = time();
 
-    $this->generateFingerprint();
+    $this->fingerprint = $this->generateFingerprint();
     
     $this->opened = true;
   }
@@ -122,7 +122,7 @@ class Session implements ArrayAccess {
       if ($create_new_if_not_exists && !$id_handler->issetId()) {
         $this->create();
       } else {
-        $this->generateFingerprint();
+        $this->fingerprint = $this->generateFingerprint();
       }
 
       if ($id_handler->issetId()) {
@@ -262,11 +262,11 @@ class Session implements ArrayAccess {
   }
   
   protected function generateFingerprint() {
-    $this->fingerprint = '';
+    $fingerprint = '';
     foreach ($this->getFingerprintGenerators() as $fingerprint_generator) {
-      $this->fingerprint .= $fingerprint_generator->generate();
+      $fingerprint .= $fingerprint_generator->generate();
     }
-    return $this->fingerprint;
+    return $fingerprint;
   }
   
   public function getFingerprint() {
@@ -441,7 +441,7 @@ class Session implements ArrayAccess {
       'last_trace' => $this->getLastTrace(),
       'last_regeneration' => $this->getLastRegeneration(),
       'requests_count' => $this->getRequestsCounter(),
-      'fingerprint' => $this->fingerprint,
+      'fingerprint' => $this->getFingerprint(),
     );
 
     return $this->getStorage()->store($this->getId(), $values);
