@@ -8,7 +8,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Sesshin\Session\Entropy;
+namespace Sesshin\EntropyGenerator;
 
 class Uniq implements EntropyGeneratorInterface {
   

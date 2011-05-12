@@ -35,7 +35,7 @@ class Session extends \Sesshin\Session\Session {
 	}
 
 	public function logout() {
-		unset($this->unsetValue($this->getUserIdKey()));
+		$this->unsetValue($this->getUserIdKey());
 	}
 
 }

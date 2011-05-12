@@ -8,10 +8,10 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Sesshin\Session\Entropy;
+namespace Sesshin\EntropyGenerator;
 use Sesshin\Exception;
 
-class Urandom implements EntropyGeneratorInterface {
+class File implements EntropyGeneratorInterface {
   
   private $file;
   private $length;

@@ -15,7 +15,7 @@ use Sesshin\Id;
 use Sesshin\Listener;
 use Sesshin\Storage;
 
-class Session implements ArrayAccess {
+class Session implements \ArrayAccess {
 
   const DEFAULT_NAMESPACE = 'default';
 

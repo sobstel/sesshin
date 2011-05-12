@@ -8,7 +8,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Sesshin\Session\Entropygenerator;
+namespace Sesshin\EntropyGenerator;
 
 interface EntropyGeneratorInterface {
   

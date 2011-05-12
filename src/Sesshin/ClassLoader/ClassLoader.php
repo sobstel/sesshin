@@ -24,7 +24,7 @@ class ClassLoader {
   
   public function __construct($base_path = null) {
     if ($base_path === null) {
-      $this->base_path = realpath(__DIR__.'/..');
+      $base_path = realpath(__DIR__.'/../..');
     }
     $this->base_path = $base_path;
   }
@@ -41,7 +41,11 @@ class ClassLoader {
   }
 
   public function register() {
-    spl_autoload_register(array($this, 'loadClass'));
+    spl_autoload_register($this->getAutoloadCallback());
+  }
+
+  public function getAutoloadCallback() {
+    return array($this, 'loadClass');
   }
 
 }
