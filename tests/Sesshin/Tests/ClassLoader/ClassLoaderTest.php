@@ -36,10 +36,17 @@ class ClassLoaderTest extends \PHPUnit_Framework_TestCase {
     );
   }
   
+  public function testRegistersAutoloadCallback() {
+    $class_loader = new ClassLoader();
+    $class_loader->register();
+    $this->assertContains($class_loader->getAutoloadCallback(), spl_autoload_functions());
+    spl_autoload_unregister($class_loader->getAutoloadCallback());
+  }
+
   /**
    * @dataProvider getClasses
    */
-  public function testClassLoaded($classname) {
+  public function testAutoloadsClasses($classname) {
     $class_loader = new ClassLoader();
     $class_loader->loadClass($classname);
     $this->assertTrue(class_exists($classname) || interface_exists($classname));
