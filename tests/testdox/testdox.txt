@@ -1,0 +1,13 @@
+Sesshin\Tests\ClassLoader\ClassLoader
+ [x] Registers autoload callback
+ [x] Autoloads classes
+
+Sesshin\Tests\EntropyGenerator\File
+ [x] Uses urandom file by default
+ [x] Reads 512 bytes from file by default
+ [x] Bytes read from file can be specified
+ [x] Throws exception on empty file
+
+Sesshin\Tests\EntropyGenerator\Uniq
+ [x] Generates unique id
+
