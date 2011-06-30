@@ -1,0 +1,18 @@
+#!/bin/sh
+
+if [ $# -ne 1 ]
+then
+  exit 1;
+fi
+
+case $1 in
+  "tests")
+    phpunit tests/
+  ;;
+  "tests-full")
+    phpunit tests/
+    phpunit --coverage-html tests/coverage tests/
+    phpunit --testdox-text tests/testdox/testdox.txt tests/
+    phpunit --testdox-html tests/testdox/testdox.html tests/
+  ;;
+esac
