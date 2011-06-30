@@ -1,5 +1,15 @@
-Session
+Sesshin
 =======
+
+Advanced session management.
+
+raw notes
+---------
+
+convention over configuration
+what uses by default
+
+conforms with psr-01 autoloading
 
 requires hash extension (bundled since 5.1.2)
 
@@ -36,4 +46,3 @@ $composite = new kSession_Storage_Composite(
 $sess = new kSession('exits', $composite);
 $sess->setGcProbability(100);
 $sess->open(true);
-
