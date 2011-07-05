@@ -10,7 +10,7 @@
 
 namespace Sesshin\Id;
 use Sesshin\Id\Storage;
-use Sesshin\Entropy;
+use Sesshin\EntropyGenerator;
 
 class Handler {
   
@@ -45,7 +45,7 @@ class Handler {
    *
    * @param Entropy\EntropyGeneratorInterface $entropy_generator
    */
-  public function setEntropyGenerator(Entropy\EntropyGeneratorInterface $entropy_generator) {
+  public function setEntropyGenerator(EntropyGenerator\EntropyGeneratorInterface $entropy_generator) {
     $this->entropy_generator = $entropy_generator;
   }
   
@@ -54,7 +54,7 @@ class Handler {
    */
   public function getEntropyGenerator() {
     if (!$this->entropy_generator) {
-      $this->entropy_generator = new Entropy\Uniq();
+      $this->entropy_generator = new EntropyGenerator\Uniq();
     }
     return $this->entropy_generator;
   }
