@@ -22,6 +22,18 @@ class Session implements \ArrayAccess {
   /** @var Sesshin\Id\Handler */
   private $id_handler;
 
+  /** @var int Number of requests after which id is regeneratd */
+  private $id_requests_limit = NULL;
+
+  /** @var int Time after id is regenerated */
+  private $id_ttl = 1440;
+
+  /** @var bool */
+  private $id_regenerated;
+
+  /** @var int */
+  private $id_regeneration_timestamp;
+
   /** @var Sesshin\Storage\StorageIntrface */
   private $storage;
 
@@ -42,18 +54,6 @@ class Session implements \ArrayAccess {
 
   /** @var int */
   private $requests_counter;
-
-  /** @var int Regenerate session id every X requests */
-  private $regenerate_after_requests = 0;
-
-  /** @var int Regenerate session id after specified time */
-  private $regenerate_after_time = 1440;
-
-  /** @var int */
-  private $last_regeneration;
-
-  /** @var bool */
-  private $regenerated;
 
   /** @var array of Sesshin\FingerprintGenerator\FingerprintGeneratorInterface */
   private $fingerprint_generators = array();
@@ -160,16 +160,8 @@ class Session implements \ArrayAccess {
    */
   public function close() {
     if ($this->opened) {
-      $now = time();
-
-      // id rotation (regenerate id)
-      if (($this->regenerate_after_requests &&
-        ($this->requests_counter % $this->regenerate_after_requests === 0)) ||
-        (($this->last_regeneration && $this->regenerate_after_time) &&
-        ($this->last_regeneration + $this->regenerate_after_time < $now))
-      ) {
+      if ($this->shouldRegenerateId()) {
         $this->regenerateId();
-        $this->last_regeneration = $now;
       }
 
       $this->updateLastTrace();
@@ -196,21 +188,20 @@ class Session implements \ArrayAccess {
   /**
    * Regenerates session id.
    *
-   * Destroys current session in cache and generates new id, which will be saved
+   * Destroys current session in storage and generates new id, which will be saved
    * at the end of script execution (together with values).
    *
    * Id is regenerated at the most once per script execution (even if called a few times).
    *
    * Mitigates Session Fixation - use it whenever the user's privilege level changes.
-   *
-   * The method is also used by {@link self::regenerateAfterRequests()} &
-   * {@link self::regenerateAfterTime()}.
    */
   public function regenerateId() {
-    if (!$this->regenerated) {
+    if (!$this->id_regenerated) {
       $this->getStorage()->destroy($this->getId());
       $this->getIdHandler()->generateId();
-      $this->regenerated = true;
+
+      $this->id_regeneration_timestamp = time();
+      $this->id_regenerated = true;
 
       return true;
     }
@@ -222,11 +213,35 @@ class Session implements \ArrayAccess {
     $this->id_handler = $id_handler;
   }
 
-  public function getIdHandler() {
+  protected function getIdHandler() {
     if (!$this->id_handler) {
       $this->id_handler = new Id\Handler();
     }
     return $this->id_handler;
+  }
+
+  public function setIdRequestsLimit($limit) {
+    $this->id_requests_limit = $limit;
+  }
+
+  public function setIdTtl($ttl) {
+    $this->id_ttl = $ttl;
+  }
+
+  protected function shouldRegenerateId() {
+    if ($this->id_requests_limit) {
+      if ($this->requests_counter >= $this->id_requests_limit) {
+        return true;
+      }
+    }
+
+    if ($this->id_ttl && $this->id_regeneration_timestamp) {
+      if ($this->id_regeneration_timestamp + $this->id_ttl < time()) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   public function setStorage(Storage\StorageInterface $storage) {
@@ -283,7 +298,7 @@ class Session implements \ArrayAccess {
   /**
    * Updates last trace timestamp.
    */
-  public function updateLastTrace() {
+  protected function updateLastTrace() {
     $this->last_trace = time();
   }
 
@@ -317,18 +332,6 @@ class Session implements \ArrayAccess {
 
   public function getRequestsCounter() {
     return $this->requests_counter;
-  }
-
-  public function getLastRegeneration() {
-    return $this->last_regenertaion;
-  }
-
-  public function regenerateAfterRequests($requests) {
-    $this->regenerate_after_requests = $requests;
-  }
-
-  public function regenerateAfterTime($time) {
-    $this->regenerate_after_time = $time;
   }
 
   public function setValue($name, $value, $namespace = self::DEFAULT_NAMESPACE) {
@@ -423,7 +426,7 @@ class Session implements \ArrayAccess {
     $metadata = $values['_metadata'];
     $this->first_trace = $metadata['first_trace'];
     $this->last_trace = $metadata['last_trace'];
-    $this->last_regeneration = $metadata['last_regeneration'];
+    $this->id_regeneration_timestamp = $metadata['last_regeneration'];
     $this->requests_counter = $metadata['requests_count'];
     $this->fingerprint = $metadata['fingerprint'];
 
@@ -443,7 +446,7 @@ class Session implements \ArrayAccess {
     $values['_metadata'] = array(
       'first_trace' => $this->getFirstTrace(),
       'last_trace' => $this->getLastTrace(),
-      'last_regeneration' => $this->getLastRegeneration(),
+      'id_regeneration_timestamp' => $this->id_regeneration_timestamp,
       'requests_count' => $this->getRequestsCounter(),
       'fingerprint' => $this->getFingerprint(),
     );
