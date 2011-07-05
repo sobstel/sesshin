@@ -19,19 +19,19 @@ class Session implements \ArrayAccess {
 
   const DEFAULT_NAMESPACE = 'default';
 
+  /** @var Sesshin\Id\Handler */
   private $id_handler;
+
+  /** @var Sesshin\Storage\StorageIntrface */
   private $storage;
+
+  /** @var Sesshin\Listener\Listener */
   private $listener;
 
   /** @var array Session values */
   private $values = array();
 
-  /**
-   * Specifies the number of seconds after which session will be automatically expired.
-   * The setting must be set before {@link self::open()} is called. 
-   * 
-   * @var int
-   */
+  /** @var int Specifies the number of seconds after which session will be automatically expired */
   private $ttl = 1440;
 
   /** @var int First trace (timestamp), time when session was created */
@@ -43,18 +43,10 @@ class Session implements \ArrayAccess {
   /** @var int */
   private $requests_counter;
 
-  /**
-   * regenerate session id every X requests
-   *
-   * @var int Regenerate session id every X requests
-   */
+  /** @var int Regenerate session id every X requests */
   private $regenerate_after_requests = 0;
 
-  /**
-   * regenerate session if after specified amount of seconds
-   *
-   * @var int Regenerate session id after specified time
-   */
+  /** @var int Regenerate session id after specified time */
   private $regenerate_after_time = 1440;
 
   /** @var int */
@@ -62,18 +54,18 @@ class Session implements \ArrayAccess {
 
   /** @var bool */
   private $regenerated;
-  
+
+  /** @var array of Sesshin\FingerprintGenerator\FingerprintGeneratorInterface */
   private $fingerprint_generators = array();
+
+  /** @var string */
   private $fingerprint = '';
-  
+
   /** @var bool Is session opened? */
   private $opened = false;
 
   /**
    * Constructor
-   *
-   * @param cSession_IdProvider|string $id Session Id provider or name for default cookie provider
-   * @param cSession_Cache $cache
    */
   public function __construct() {
     // registering pseudo-destructor, just in case someone forgets to close
@@ -85,7 +77,7 @@ class Session implements \ArrayAccess {
    *
    * It should be called only once at the beginning. If called for existing
    * session it ovewrites it (clears all values etc).
-   * It can be replaced with {@link cSession::open()} (called with "true" argument)
+   * It can be replaced with {@link self::open()} (called with "true" argument)
    */
   public function create() {
     $this->getIdHandler()->generateId();
@@ -99,15 +91,16 @@ class Session implements \ArrayAccess {
     $this->last_regeneration = time();
 
     $this->fingerprint = $this->generateFingerprint();
-    
+
     $this->opened = true;
   }
 
   /**
    * Opens the session (for a given request)
    *
-   * If session hasn't been created earlier with {@link cSession::create()} method then :
-   * - if argument is set to true, session will be created implicitly (behaves like PHP's native session_start()),
+   * If session hasn't been created earlier with {@link self::create()} method then:
+   * - if argument is set to true, session will be created implicitly (behaves
+   *   like PHP's native session_start()),
    * - otherwise, session won't be created and apprporiate listeners will be notified.
    *
    * If called earlier, then second (and next ones) call does nothing
@@ -153,6 +146,11 @@ class Session implements \ArrayAccess {
     return $this->opened;
   }
 
+  /**
+   * Alias of {@link self::isOpened()}.
+   *
+   * @return bool
+   */
   public function isOpen() {
     return $this->isOpened();
   }
@@ -205,8 +203,8 @@ class Session implements \ArrayAccess {
    *
    * Mitigates Session Fixation - use it whenever the user's privilege level changes.
    *
-   * The method is also used by {@link cSession::setIdRotationRequests()} &
-   * {@link cSession::setIdRotationTime()}.
+   * The method is also used by {@link self::regenerateAfterRequests()} &
+   * {@link self::regenerateAfterTime()}.
    */
   public function regenerateId() {
     if (!$this->regenerated) {
@@ -223,7 +221,7 @@ class Session implements \ArrayAccess {
   public function setIdHandler(Id\Handler $id_handler) {
     $this->id_handler = $id_handler;
   }
-  
+
   public function getIdHandler() {
     if (!$this->id_handler) {
       $this->id_handler = new Id\Handler();
@@ -234,10 +232,10 @@ class Session implements \ArrayAccess {
   public function setStorage(Storage\StorageInterface $storage) {
     $this->storage = $storage;
   }
-  
+
   public function getStorage() {
     if (!$this->storage) {
-      $this->storage = new Storage/Files();
+      $this->storage = new Storage\Files();
     }
     return $this->storage;
   }
@@ -256,11 +254,11 @@ class Session implements \ArrayAccess {
   public function addFingerprintGenerator(FingerprintGenerator\FingerprintGeneratorInterface $fingerprint_generator) {
     $this->fingerprint_generators[] = $fingerprint_generator;
   }
-  
+
   protected function getFingerprintGenerators() {
     return $this->fingerprint_generators;
   }
-  
+
   protected function generateFingerprint() {
     $fingerprint = '';
     foreach ($this->getFingerprintGenerators() as $fingerprint_generator) {
@@ -268,14 +266,14 @@ class Session implements \ArrayAccess {
     }
     return $fingerprint;
   }
-  
+
   public function getFingerprint() {
     return $this->fingerprint;
   }
 
   /**
    * Gets first trace timestamp.
-   * 
+   *
    * @return int
    */
   public function getFirstTrace() {
@@ -291,22 +289,28 @@ class Session implements \ArrayAccess {
 
   /**
    * Gets last trace timestamp.
-   * 
+   *
    * @return int
    */
   public function getLastTrace() {
     return $this->last_trace;
   }
 
+  /**
+   *
+   * It must be called before {@link self::open()}.
+   *
+   * @param type $ttl
+   */
   public function setTtl($ttl) {
     if ($this->isOpened()) {
       throw new Exception('Session is already opened, ttl cannot be set');
-    }  
-    
+    }
+
     $this->ttl = $ttl;
     $this->getStorage()->setDefaultTtl($ttl);
   }
-  
+
   public function getTtl() {
     return $this->ttl;
   }
@@ -342,9 +346,9 @@ class Session implements \ArrayAccess {
   }
 
   /**
-   * Gets all (in general or namespaces's) session values
+   * Gets all (in general or namespaces's) session values.
    *
-   * @param option Namespace
+   * @param string Namespace
    * @return array Session values
    */
   public function getValues($namespace = null) {
@@ -403,7 +407,7 @@ class Session implements \ArrayAccess {
   public function __unset($index) {
     $this->unsetValue($index);
   }
-  
+
   /**
    * Loads session data from cache.
    * @return bool
