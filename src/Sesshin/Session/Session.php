@@ -83,7 +83,7 @@ class Session implements \ArrayAccess {
   public function create() {
     $this->getIdHandler()->generateId();
 
-    $this->unsetAllValues();
+    $this->values = array();
 
     $this->first_trace = time();
     $this->updateLastTrace();
@@ -168,7 +168,7 @@ class Session implements \ArrayAccess {
       $this->updateLastTrace();
       $this->save();
 
-      $this->unsetAllValues();
+      $this->values = array();
       $this->opened = false;
     }
   }
@@ -177,7 +177,7 @@ class Session implements \ArrayAccess {
    * Destroy the session.
    */
   public function destroy() {
-    $this->unsetAllValues();
+    $this->values = array();
     $this->getStorage()->delete($this->getId());
     $this->getIdHandler()->unsetId();
   }
@@ -349,14 +349,8 @@ class Session implements \ArrayAccess {
     return $value;
   }
 
-  /**
-   * Gets all (in general or namespaces's) session values.
-   *
-   * @param string Namespace
-   * @return array Session values
-   */
-  public function getValues($namespace = null) {
-    return is_null($namespace) ? $this->values : $this->values[$namespace];
+  public function getValues($namespace = self::DEFAULT_NAMESPACE) {
+    return (isset($this->values[$namespace]) ? $this->values[$namespace] : array());
   }
 
   public function issetValue($name, $namespace = self::DEFAULT_NAMESPACE) {
@@ -364,19 +358,14 @@ class Session implements \ArrayAccess {
   }
 
   public function unsetValue($name, $namespace = self::DEFAULT_NAMESPACE) {
-    unset($this->values[$namespace][$name]);
+    if (isset($this->values[$namespace][$name])) {
+      unset($this->values[$namespace][$name]);
+    }
   }
 
-  /**
-   * Removes all session values.
-   *
-   * Note that it's metadata safe, i.e. it doesn't remove metadata
-   */
-  public function unsetAllValues($namespace = null) {
-    if (!is_null($namespace)) {
-      $this->values[$namespace] = array();
-    } else {
-      $this->values = array();
+  public function unsetValues($namespace = self::DEFAULT_NAMESPACE) {
+    if (isset($this->values[$namespace])) {
+      unset($this->values[$namespace]);
     }
   }
 
