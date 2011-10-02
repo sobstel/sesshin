@@ -11,3 +11,7 @@ Sesshin\Tests\EntropyGenerator\File
 Sesshin\Tests\EntropyGenerator\Uniq
  [x] Generates unique id
 
+Sesshin\Tests\Session\Session
+ [x] Create generates id
+ [x] Create unsets all values
+
