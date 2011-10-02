@@ -18,7 +18,7 @@ use Sesshin\Storage;
 class Session implements \ArrayAccess {
 
   const DEFAULT_NAMESPACE = 'default';
-  const METADATA_NAMESPACE = 'metadata';
+  const METADATA_NAMESPACE = '__metadata__';
 
   /** @var Sesshin\Id\Handler */
   private $id_handler;
