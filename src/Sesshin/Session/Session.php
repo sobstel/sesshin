@@ -18,6 +18,7 @@ use Sesshin\Storage;
 class Session implements \ArrayAccess {
 
   const DEFAULT_NAMESPACE = 'default';
+  const METADATA_NAMESPACE = 'metadata';
 
   /** @var Sesshin\Id\Handler */
   private $id_handler;
@@ -88,7 +89,7 @@ class Session implements \ArrayAccess {
     $this->updateLastTrace();
 
     $this->requests_counter = 1;
-    $this->last_regeneration = time();
+    $this->id_regeneration_timestamp = time();
 
     $this->fingerprint = $this->generateFingerprint();
 
@@ -423,10 +424,10 @@ class Session implements \ArrayAccess {
     }
 
     // metadata
-    $metadata = $values['_metadata'];
+    $metadata = $values[self::METADATA_NAMESPACE];
     $this->first_trace = $metadata['first_trace'];
     $this->last_trace = $metadata['last_trace'];
-    $this->id_regeneration_timestamp = $metadata['last_regeneration'];
+    $this->id_regeneration_timestamp = $metadata['id_regeneration_timestamp'];
     $this->requests_counter = $metadata['requests_count'];
     $this->fingerprint = $metadata['fingerprint'];
 
@@ -443,7 +444,7 @@ class Session implements \ArrayAccess {
   protected function save() {
     $values = $this->values;
 
-    $values['_metadata'] = array(
+    $values[self::METADATA_NAMESPACE] = array(
       'first_trace' => $this->getFirstTrace(),
       'last_trace' => $this->getLastTrace(),
       'id_regeneration_timestamp' => $this->id_regeneration_timestamp,
