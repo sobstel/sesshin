@@ -33,7 +33,7 @@ class Session implements \ArrayAccess {
   private $id_regenerated;
 
   /** @var int */
-  private $id_regeneration_timestamp;
+  private $regeneration_trace;
 
   /** @var Sesshin\Storage\StorageIntrface */
   private $storage;
@@ -89,7 +89,7 @@ class Session implements \ArrayAccess {
     $this->updateLastTrace();
 
     $this->requests_counter = 1;
-    $this->id_regeneration_timestamp = time();
+    $this->regeneration_trace = time();
 
     $this->fingerprint = $this->generateFingerprint();
 
@@ -201,7 +201,7 @@ class Session implements \ArrayAccess {
       $this->getStorage()->destroy($this->getId());
       $this->getIdHandler()->generateId();
 
-      $this->id_regeneration_timestamp = time();
+      $this->regeneration_trace = time();
       $this->id_regenerated = true;
 
       return true;
@@ -236,8 +236,8 @@ class Session implements \ArrayAccess {
       }
     }
 
-    if ($this->id_ttl && $this->id_regeneration_timestamp) {
-      if ($this->id_regeneration_timestamp + $this->id_ttl < time()) {
+    if ($this->id_ttl && $this->regeneration_trace) {
+      if ($this->regeneration_trace + $this->id_ttl < time()) {
         return true;
       }
     }
@@ -310,6 +310,15 @@ class Session implements \ArrayAccess {
    */
   public function getLastTrace() {
     return $this->last_trace;
+  }
+
+  /**
+   * Gets last (id) regeneration timestamp.
+   * 
+   * @return int
+   */
+  public function getRegenerationTrace() {
+    return $this->regeneration_trace;
   }
 
   /**
@@ -416,7 +425,7 @@ class Session implements \ArrayAccess {
     $metadata = $values[self::METADATA_NAMESPACE];
     $this->first_trace = $metadata['first_trace'];
     $this->last_trace = $metadata['last_trace'];
-    $this->id_regeneration_timestamp = $metadata['id_regeneration_timestamp'];
+    $this->regeneration_trace = $metadata['regeneration_trace'];
     $this->requests_counter = $metadata['requests_count'];
     $this->fingerprint = $metadata['fingerprint'];
 
@@ -436,7 +445,7 @@ class Session implements \ArrayAccess {
     $values[self::METADATA_NAMESPACE] = array(
       'first_trace' => $this->getFirstTrace(),
       'last_trace' => $this->getLastTrace(),
-      'id_regeneration_timestamp' => $this->id_regeneration_timestamp,
+      'regeneration_trace' => $this->getRegenerationTrace(),
       'requests_count' => $this->getRequestsCounter(),
       'fingerprint' => $this->getFingerprint(),
     );
