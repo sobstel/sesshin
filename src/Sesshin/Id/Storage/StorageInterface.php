@@ -9,8 +9,6 @@
  */
 
 namespace Sesshin\Id\Storage;
-use Sesshin\Exception;
-use Sesshin\Session\Entropy;
 
 interface StorageInterface { 
   
