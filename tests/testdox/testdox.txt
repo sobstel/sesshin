@@ -14,4 +14,10 @@ Sesshin\Tests\EntropyGenerator\Uniq
 Sesshin\Tests\Session\Session
  [x] Create generates id
  [x] Create unsets all values
+ [x] Create resets first trace
+ [x] Create resets last trace
+ [x] Create resets requests counter
+ [x] Create resets id regeneration timestamp
+ [x] Create generates fingerprint
+ [x] Create opens session
 
