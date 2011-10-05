@@ -122,6 +122,9 @@ class SessionTest extends \PHPUnit_Framework_TestCase {
     $session->open(true);
   }
   
+  /**
+   * @covers Sesshin\Session\Session::open 
+   */
   public function testOpenWhenCalledWithTrueThenDoesNotCreateNewSessionIfSessionIdExistsAlready() {
     $session = $this->setUpSession($this->getMock('\Sesshin\Session\Session', array('create')));    
     $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(true));    
