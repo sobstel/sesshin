@@ -217,7 +217,7 @@ class Session implements \ArrayAccess {
     $this->id_handler = $id_handler;
   }
 
-  protected function getIdHandler() {
+  public function getIdHandler() {
     if (!$this->id_handler) {
       $this->id_handler = new Id\Handler();
     }
