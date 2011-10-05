@@ -79,6 +79,8 @@ class Session implements \ArrayAccess {
    * It should be called only once at the beginning. If called for existing
    * session it ovewrites it (clears all values etc).
    * It can be replaced with {@link self::open()} (called with "true" argument)
+   * 
+   * @return bool Session opened?
    */
   public function create() {
     $this->getIdHandler()->generateId();
@@ -94,6 +96,8 @@ class Session implements \ArrayAccess {
     $this->fingerprint = $this->generateFingerprint();
 
     $this->opened = true;
+
+    return $this->opened;
   }
 
   /**
@@ -107,22 +111,21 @@ class Session implements \ArrayAccess {
    * If called earlier, then second (and next ones) call does nothing
    *
    * @param bool Create new session if not exists earlier?
-   * @return bool
+   * @return bool Session opened?
    */
   public function open($create_new_if_not_exists = false) {
     if (!$this->isOpened()) {
       $id_handler = $this->getIdHandler();
 
       if ($create_new_if_not_exists && !$id_handler->issetId()) {
-        $this->create();
-      } else {
-        $this->fingerprint = $this->generateFingerprint();
+        return $this->create();
       }
 
       if ($id_handler->issetId()) {
         $this->load();
 
         $last_trace = $this->getLastTrace();
+        $this->fingerprint = $this->generateFingerprint();
 
         if (is_null($last_trace)) { // no data found, either session adoption attempt (wrong sessid) or expired session data already removed
           $this->getListener()->trigger('sesshin.session.no_data_or_expired', array($this));
