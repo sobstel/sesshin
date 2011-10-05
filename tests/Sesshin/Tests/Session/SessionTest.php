@@ -110,5 +110,34 @@ class SessionTest extends \PHPUnit_Framework_TestCase {
     $session->create();
     $this->assertEquals(true, $session->isOpened());
   }
+  
+  /**
+   * @covers Sesshin\Session\Session::open 
+   */
+  public function testOpenWhenCalledWithTrueThenCreatesNewSessionIfSessionNotExistsAlready() {
+    $session = $this->setUpSession($this->getMock('\Sesshin\Session\Session', array('create')));    
+    $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(false));    
+    $session->expects($this->once())->method('create');
+
+    $session->open(true);
+  }
+  
+  public function testOpenWhenCalledWithTrueThenDoesNotCreateNewSessionIfSessionIdExistsAlready() {
+    $session = $this->setUpSession($this->getMock('\Sesshin\Session\Session', array('create')));    
+    $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(true));    
+    $session->expects($this->never())->method('create');
+
+    $session->open(true);    
+  }
+  
+  /**
+   * @covers Sesshin\Session\Session::open 
+   */
+  public function testOpenWhenCalledWithFalseThenDoesNotCreateNewSession() {
+    $session = $this->setUpSession($this->getMock('\Sesshin\Session\Session', array('create')));
+    $session->expects($this->never())->method('create');
+
+    $session->open(false);
+  }
 
 }

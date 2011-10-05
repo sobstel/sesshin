@@ -20,4 +20,7 @@ Sesshin\Tests\Session\Session
  [x] Create resets id regeneration timestamp
  [x] Create generates fingerprint
  [x] Create opens session
+ [x] Open when called with true then creates new session if session not exists already
+ [x] Open when called with true then does not create new session if session id exists already
+ [x] Open when called with false then does not create new session
 
