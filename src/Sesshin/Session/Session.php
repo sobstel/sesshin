@@ -260,13 +260,13 @@ class Session implements \ArrayAccess {
   }
 
   public function setListener(Listener\Listener $listener) {
-    if (!$this->listener) {
-      $this->listener = new Listener\Listener();
-    }
     $this->listener = $listener;
   }
 
   public function getListener() {
+    if (!$this->listener) {
+      $this->listener = new Listener\Listener();
+    }
     return $this->listener;
   }
 
