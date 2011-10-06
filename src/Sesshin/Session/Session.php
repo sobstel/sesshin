@@ -115,13 +115,7 @@ class Session implements \ArrayAccess {
    */
   public function open($create_new_if_not_exists = false) {
     if (!$this->isOpened()) {
-      $id_handler = $this->getIdHandler();
-
-      if ($create_new_if_not_exists && !$id_handler->issetId()) {
-        return $this->create();
-      }
-
-      if ($id_handler->issetId()) {
+      if ($this->getIdHandler()->issetId()) {
         $this->load();
 
         $last_trace = $this->getLastTrace();
@@ -137,6 +131,9 @@ class Session implements \ArrayAccess {
           $this->opened = true;
           $this->requests_counter += 1;
         }
+      }
+      elseif ($create_new_if_not_exists) {
+        $this->create();
       }
     }
 
