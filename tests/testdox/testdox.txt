@@ -12,18 +12,18 @@ Sesshin\Tests\EntropyGenerator\Uniq
  [x] Generates unique id
 
 Sesshin\Tests\Session\Session
- [x] Create generates id
- [x] Create unsets all values
- [x] Create resets first trace
- [x] Create resets last trace
- [x] Create resets requests counter
- [x] Create resets id regeneration timestamp
- [x] Create generates fingerprint
- [x] Create opens session
- [x] Open when called with true then creates new session if session not exists already
- [x] Open when called with true then does not create new session if session id exists already
- [x] Open when called with false then does not create new session
- [x] Open loads session data if session exists
- [x] Open does not load session data if session not exists
- [x] Open generates fingerprint if session exists
+ [x] Create method generates id
+ [x] Create method unsets all values
+ [x] Create method resets first trace
+ [x] Create method resets last trace
+ [x] Create method resets requests counter
+ [x] Create method resets id regeneration timestamp
+ [x] Create method generates fingerprint
+ [x] Create method opens session
+ [x] Open method when called with true then creates new session if session not exists already
+ [x] Open method when called with true then does not create new session if session id exists already
+ [x] Open method when called with false then does not create new session
+ [x] Open method loads session data if session exists
+ [x] Open method does not load session data if session not exists
+ [x] Open method generates fingerprint if session exists
 

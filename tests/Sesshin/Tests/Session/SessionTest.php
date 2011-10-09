@@ -36,7 +36,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase {
   /**
    * @covers Sesshin\Session\Session::create
    */
-  public function testCreateGeneratesId() {
+  public function testCreateMethodGeneratesId() {
     $session = $this->setUpSession();
     $session->getIdHandler()->expects($this->once())->method('generateId');
     $session->create();
@@ -45,7 +45,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase {
   /**
    * @covers Sesshin\Session\Session::create
    */ 
-  public function testCreateUnsetsAllValues() {
+  public function testCreateMethodUnsetsAllValues() {
     $session = $this->setUpSession();
     $ref_prop_values = new \ReflectionProperty('\Sesshin\Session\Session', 'values');
     $ref_prop_values->setAccessible(true);
@@ -57,7 +57,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase {
   /**
    * @covers Sesshin\Session\Session::create
    */ 
-  public function testCreateResetsFirstTrace() {
+  public function testCreateMethodResetsFirstTrace() {
     $session = $this->setUpSession();
     $first_trace = $session->getFirstTrace();
     $session->create();
@@ -67,7 +67,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase {
   /**
    * @covers Sesshin\Session\Session::create
    */ 
-  public function testCreateResetsLastTrace() {
+  public function testCreateMethodResetsLastTrace() {
     $session = $this->setUpSession();
     $last_trace = $session->getLastTrace();
     $session->create();
@@ -77,7 +77,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase {
   /**
    * @covers Sesshin\Session\Session::create
    */ 
-  public function testCreateResetsRequestsCounter() {
+  public function testCreateMethodResetsRequestsCounter() {
     $session = $this->setUpSession();
     $session->create();
     $this->assertEquals(1, $session->getRequestsCounter());
@@ -86,7 +86,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase {
   /**
    * @covers Sesshin\Session\Session::create
    */ 
-  public function testCreateResetsIdRegenerationTimestamp() {
+  public function testCreateMethodResetsIdRegenerationTimestamp() {
     $session = $this->setUpSession();
     $regeneration_trace = $session->getRegenerationTrace();
     $session->create();
@@ -96,7 +96,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase {
   /**
    * @covers Sesshin\Session\Session::create
    */ 
-  public function testCreateGeneratesFingerprint() {
+  public function testCreateMethodGeneratesFingerprint() {
     $session = $this->setUpSession($this->getMock('\Sesshin\Session\Session', array('generateFingerprint')));
     $session->expects($this->once())->method('generateFingerprint');
     $session->create();
@@ -105,7 +105,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase {
   /**
    * @covers Sesshin\Session\Session::create
    */ 
-  public function testCreateOpensSession() {
+  public function testCreateMethodOpensSession() {
     $session = $this->setUpSession();
     $session->create();
     $this->assertEquals(true, $session->isOpened());
@@ -114,7 +114,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase {
   /**
    * @covers Sesshin\Session\Session::open 
    */
-  public function testOpenWhenCalledWithTrueThenCreatesNewSessionIfSessionNotExistsAlready() {
+  public function testOpenMethodWhenCalledWithTrueThenCreatesNewSessionIfSessionNotExistsAlready() {
     $session = $this->setUpSession($this->getMock('\Sesshin\Session\Session', array('create')));    
     $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(false));    
     $session->expects($this->once())->method('create');
@@ -125,7 +125,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase {
   /**
    * @covers Sesshin\Session\Session::open 
    */
-  public function testOpenWhenCalledWithTrueThenDoesNotCreateNewSessionIfSessionIdExistsAlready() {
+  public function testOpenMethodWhenCalledWithTrueThenDoesNotCreateNewSessionIfSessionIdExistsAlready() {
     $session = $this->setUpSession($this->getMock('\Sesshin\Session\Session', array('create')));    
     $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(true));    
     $session->expects($this->never())->method('create');
@@ -136,7 +136,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase {
   /**
    * @covers Sesshin\Session\Session::open 
    */
-  public function testOpenWhenCalledWithFalseThenDoesNotCreateNewSession() {
+  public function testOpenMethodWhenCalledWithFalseThenDoesNotCreateNewSession() {
     $session = $this->setUpSession($this->getMock('\Sesshin\Session\Session', array('create')));
     $session->expects($this->never())->method('create');
 
@@ -146,7 +146,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase {
   /**
    * @covers Sesshin\Session\Session::open
    */
-  public function testOpenLoadsSessionDataIfSessionExists() {
+  public function testOpenMethodLoadsSessionDataIfSessionExists() {
     $session = $this->setUpSession($this->getMock('\Sesshin\Session\Session', array('create', 'load', 'generateFingerprint')));
     $session->expects($this->any())->method('isOpened')->will($this->returnValue(false));
     $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(true));
@@ -158,7 +158,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase {
   /**
    * @covers Sesshin\Session\Session::open
    */
-  public function testOpenDoesNotLoadSessionDataIfSessionNotExists() {
+  public function testOpenMethodDoesNotLoadSessionDataIfSessionNotExists() {
     $session = $this->setUpSession($this->getMock('\Sesshin\Session\Session', array('create', 'load', 'generateFingerprint')));
     $session->expects($this->any())->method('isOpened')->will($this->returnValue(false));    
     $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(false));
@@ -168,9 +168,12 @@ class SessionTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Fingerpring is generated, so it can be compared with the one in session
+   * metadata for session validity.
+   * 
    * @covers Sesshin\Session\Session::open
    */
-  public function testOpenGeneratesFingerprintIfSessionExists() {
+  public function testOpenMethodGeneratesFingerprintIfSessionExists() {
     $session = $this->setUpSession($this->getMock('\Sesshin\Session\Session', array('create', 'load', 'generateFingerprint')));
     $session->expects($this->any())->method('isOpened')->will($this->returnValue(false));
     $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(true));
