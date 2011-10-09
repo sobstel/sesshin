@@ -394,22 +394,6 @@ class Session implements \ArrayAccess {
     $this->unsetValue($offset);
   }
 
-  public function __set($index, $value) {
-    $this->setValue($index, $value);
-  }
-
-  public function __get($index) {
-    return $this->getValue($index);
-  }
-
-  public function __isset($index) {
-    return $this->issetValue($index);
-  }
-
-  public function __unset($index) {
-    $this->unsetValue($index);
-  }
-
   /**
    * Loads session data from cache.
    * @return bool
