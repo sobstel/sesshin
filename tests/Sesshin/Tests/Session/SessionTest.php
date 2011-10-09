@@ -181,4 +181,23 @@ class SessionTest extends \PHPUnit_Framework_TestCase {
 
     $session->open();
   }
+
+  public function testImplementsArrayAccessForSessionValues() {
+    $session = $this->getMock('\Sesshin\Session\Session', array('setValue'));
+    $session->expects($this->once())->method('setValue')->with($this->equalTo('key'), $this->equalTo('value'));
+    $session['key'] = 'value';
+
+    $session = $this->getMock('\Sesshin\Session\Session', array('getValue'));
+    $session->expects($this->once())->method('getValue')->with($this->equalTo('key'));
+    $session['key'];
+
+    $session = $this->getMock('\Sesshin\Session\Session', array('issetValue'));
+    $session->expects($this->once())->method('issetValue')->with($this->equalTo('key'));
+    isset($session['key']);
+
+    $session = $this->getMock('\Sesshin\Session\Session', array('unsetValue'));
+    $session->expects($this->once())->method('unsetValue')->with($this->equalTo('key'));
+    unset($session['key']);
+  }
+
 }

@@ -26,4 +26,5 @@ Sesshin\Tests\Session\Session
  [x] Open method loads session data if session exists
  [x] Open method does not load session data if session not exists
  [x] Open method generates fingerprint if session exists
+ [x] Implements array access for session values
 
