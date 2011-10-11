@@ -20,6 +20,10 @@ class Session implements \ArrayAccess {
   const DEFAULT_NAMESPACE = 'default';
   const METADATA_NAMESPACE = '__metadata__';
 
+  const EVENT_NO_DATA_OR_EXPIRED = 'sesshin.session.no_data_or_expired';
+  const EVENT_EXPIRED = 'sesshin.session.expired';
+  const EVENT_INVALID_FINGERPRINT = 'sesshin.session.invalid_fingerprint';
+
   /** @var Sesshin\Id\Handler */
   private $id_handler;
 
@@ -79,7 +83,7 @@ class Session implements \ArrayAccess {
    * It should be called only once at the beginning. If called for existing
    * session it ovewrites it (clears all values etc).
    * It can be replaced with {@link self::open()} (called with "true" argument)
-   * 
+   *
    * @return bool Session opened?
    */
   public function create() {
@@ -118,15 +122,12 @@ class Session implements \ArrayAccess {
       if ($this->getIdHandler()->issetId()) {
         $this->load();
 
-        $last_trace = $this->getLastTrace();
-        $this->fingerprint = $this->generateFingerprint();
-
-        if (is_null($last_trace)) { // no data found, either session adoption attempt (wrong sessid) or expired session data already removed
-          $this->getListener()->trigger('sesshin.session.no_data_or_expired', array($this));
-        } elseif ($last_trace + $this->getTtl() < time()) { // expired
-          $this->getListener()->trigger('sesshin.session.expired', array($this));
-        } elseif ($this->fingerprint != $this->getFingerprint()) {
-          $this->getListener()->trigger('sesshin.session.invalid_fingerprint', array($this));
+        if (!$this->getFirstTrace()) {
+          $this->getListener()->trigger(self::EVENT_NO_DATA_OR_EXPIRED, array($this));
+        } elseif ($this->isExpired()) {
+          $this->getListener()->trigger(self::EVENT_EXPIRED, array($this));
+        } elseif ($this->generateFingerprint() != $this->getFingerprint()) {
+          $this->getListener()->trigger(self::EVENT_INVALID_FINGERPRINT, array($this));
         } else {
           $this->opened = true;
           $this->requests_counter += 1;
@@ -154,6 +155,10 @@ class Session implements \ArrayAccess {
    */
   public function isOpen() {
     return $this->isOpened();
+  }
+
+  public function isExpired() {
+    return ($this->getLastTrace() + $this->getTtl() < time());
   }
 
   /**
@@ -230,16 +235,12 @@ class Session implements \ArrayAccess {
   }
 
   protected function shouldRegenerateId() {
-    if ($this->id_requests_limit) {
-      if ($this->requests_counter >= $this->id_requests_limit) {
-        return true;
-      }
+    if (($this->id_requests_limit) && ($this->requests_counter >= $this->id_requests_limit)) {
+      return true;
     }
 
-    if ($this->id_ttl && $this->regeneration_trace) {
-      if ($this->regeneration_trace + $this->id_ttl < time()) {
-        return true;
-      }
+    if (($this->id_ttl && $this->regeneration_trace) && ($this->regeneration_trace + $this->id_ttl < time())) {
+      return true;
     }
 
     return false;
@@ -314,7 +315,7 @@ class Session implements \ArrayAccess {
 
   /**
    * Gets last (id) regeneration timestamp.
-   * 
+   *
    * @return int
    */
   public function getRegenerationTrace() {
