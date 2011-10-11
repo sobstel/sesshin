@@ -9,6 +9,6 @@
          processIsolation="false"
          stopOnFailure="false"
          syntaxCheck="false"
-         bootstrap="autoload.php"
+         bootstrap="tests/autoload.php"
 >
 </phpunit>
