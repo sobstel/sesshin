@@ -37,6 +37,8 @@
       Sesshin\Tests\Session\Session
     </h2>
     <ul>
+      <li>Can get requests counter
+      </li>
       <li>Create method generates id
       </li>
       <li>Create method unsets all values
@@ -47,7 +49,7 @@
       </li>
       <li>Create method resets requests counter
       </li>
-      <li>Create method resets id regeneration timestamp
+      <li>Create method resets id regeneration trace
       </li>
       <li>Create method generates fingerprint
       </li>
@@ -63,7 +65,13 @@
       </li>
       <li>Open method does not load session data if session not exists
       </li>
-      <li>Open method generates fingerprint if session exists
+      <li>Open method triggers session no data or expired event if no data present after load
+      </li>
+      <li>Open method triggers session expired event if session expired
+      </li>
+      <li>Open method triggers invalid fingerprint event if loaded fingerprint invalid
+      </li>
+      <li>Open method open session and increments requests counter
       </li>
       <li>Implements array access for session values
       </li>
