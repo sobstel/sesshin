@@ -33,17 +33,43 @@ class SessionTest extends TestCase {
 
     return $session;
   }
-  
+
+  /**
+   * @covers Sesshin\Session\Session::setValue
+   */
+  public function testValueIsSetToDefaultNamespaceByDefault() {
+    $session = $this->setUpDefaultSession();
+    $ref_prop = $this->setPropertyAccessible($session, 'values');
+
+    $session->setValue('name', 'value');
+
+    $values = $ref_prop->getValue($session);
+    $this->assertEquals('value', $values[Session::DEFAULT_NAMESPACE]['name']);
+  }
+
+  /**
+   * @covers Sesshin\Session\Session::setValue
+   */
+  public function testCanSetValueToCustomNamespace() {
+    $session = $this->setUpDefaultSession();
+    $ref_prop = $this->setPropertyAccessible($session, 'values');
+
+    $session->setValue('name', 'value', 'namespace');
+
+    $values = $ref_prop->getValue($session);
+    $this->assertEquals('value', $values['namespace']['name']);
+  }
+
   /**
    * @covers Sesshin\Session\Session::getRequestsCounter
    */
   public function testCanGetRequestsCounter() {
     $session = $this->setUpDefaultSession();
-    $value = 37;    
+    $value = 37;
     $this->setPropertyValue($session, 'requests_counter', $value);
     $this->assertEquals($value, $session->getRequestsCounter());
   }
-  
+
   /**
    * @covers Sesshin\Session\Session::create
    */
@@ -100,7 +126,7 @@ class SessionTest extends TestCase {
     $regeneration_trace = $session->getRegenerationTrace();
     $session->create();
     $this->assertNotEquals($regeneration_trace, $session->getRegenerationTrace());
-    
+
     $value = 1;
     $session = $this->setUpDefaultSession();
     $this->setPropertyValue($session, 'regeneration_trace', $value);
@@ -207,14 +233,14 @@ class SessionTest extends TestCase {
     $session->expects($this->once())->method('getFirstTrace')->will($this->returnValue(time()));
     $session->expects($this->once())->method('isExpired')->will($this->returnValue(true));
     $session->getListener()->expects($this->once())->method('trigger')->with($this->equalTo(Session::EVENT_EXPIRED));
-    
+
     $session->open();
   }
 
   /**
    * Fingerpring is generated, so it can be compared with the one in session
    * metadata for session validity.
-   * 
+   *
    * @covers Sesshin\Session\Session::open
    */
   public function testOpenMethodTriggersInvalidFingerprintEventIfLoadedFingerprintInvalid() {
@@ -226,10 +252,10 @@ class SessionTest extends TestCase {
     $session->expects($this->once())->method('getFingerprint')->will($this->returnValue('abc'));
     $session->expects($this->once())->method('generateFingerprint')->will($this->returnValue('def'));
     $session->getListener()->expects($this->once())->method('trigger')->with($this->equalTo(Session::EVENT_INVALID_FINGERPRINT));
-    
+
     $session->open();
   }
-  
+
   /**
    * @covers Sesshin\Session\Session::open
    * @depends testCanGetRequestsCounter
@@ -242,13 +268,70 @@ class SessionTest extends TestCase {
     $session->expects($this->once())->method('isExpired')->will($this->returnValue(false));
     $session->expects($this->once())->method('getFingerprint')->will($this->returnValue('abc'));
     $session->expects($this->once())->method('generateFingerprint')->will($this->returnValue('abc'));
-    
+
     $requests_counter = $session->getRequestsCounter();
-    
+
     $session->open();
-    
-    $this->assertSame(true, $session->isOpened());    
+
+    $this->assertSame(true, $session->isOpened());
     $this->assertEquals($requests_counter + 1, $session->getRequestsCounter());
+  }
+
+  /**
+   * @covers Sesshin\Session\Session::setIdHandler
+   * @covers Sesshin\Session\Session::getIdHandler
+   */
+  public function testCanSetGetIdHandler() {
+    $session = new Session();
+    $id_handler = new \Sesshin\Id\Handler();
+    $session->setIdHandler($id_handler);
+    $this->assertSame($id_handler, $session->getIdHandler());
+  }
+
+  /**
+   * @covers Sesshin\Session\Session::getIdHandler
+   */
+  public function testUsesDefaultIdHandlerIfNotSet() {
+    $session = new Session();
+    $this->assertEquals('Sesshin\Id\Handler', get_class($session->getIdHandler()));
+  }
+
+  /**
+   * @covers Sesshin\Session\Session::setStorage
+   * @covers Sesshin\Session\Session::getStorage
+   */
+  public function testCanSetGetStorage() {
+    $session = new Session();
+    $storage = new \Sesshin\Storage\Files();
+    $session->setStorage($storage);
+    $this->assertSame($storage, $session->getStorage());
+  }
+
+  /**
+   * @covers Sesshin\Session\Session::getStorage
+   */
+  public function testUsesFilesStorageIfNotSet() {
+    $session = new Session();
+    $this->assertEquals('Sesshin\Storage\Files', get_class($session->getStorage()));
+  }
+
+  /**
+   * @covers Sesshin\Session\Session::setListener
+   * @covers Sesshin\Session\Session::getListener
+   */
+  public function testCanSetGetListener() {
+    $session = new Session();
+    $listener = new \Sesshin\Listener\Listener();
+    $session->setListener($listener);
+    $this->assertSame($listener, $session->getListener());
+  }
+
+  /**
+   * @covers Sesshin\Session\Session::getListener
+   */
+  public function testUsesDefaultListenerIfNotSet() {
+    $session = new Session();
+    $this->assertEquals('Sesshin\Listener\Listener', get_class($session->getListener()));
   }
 
   /**
