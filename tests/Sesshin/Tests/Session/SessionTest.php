@@ -61,6 +61,46 @@ class SessionTest extends TestCase {
   }
 
   /**
+   * @covers Sesshin\Session\Session::getValue
+   * @depends testValueIsSetToDefaultNamespaceByDefault
+   */
+  public function testCanGetValue() {
+    $session = $this->setUpDefaultSession();
+    $session->setValue('name', 'value');
+    $this->assertSame('value', $session->getValue('name'));
+  }
+
+  /**
+   * @covers Sesshin\Session\Session::getValue
+   * @depends testValueIsSetToDefaultNamespaceByDefault
+   */
+  public function testCanGetValueMethodReturnsNullIfNoValueForGivenName() {
+    $session = $this->setUpDefaultSession();
+    $this->assertNull($session->getValue('name'));
+  }
+
+  /**
+   * @covers Sesshin\Session\Session::issetValue
+   * @depends testValueIsSetToDefaultNamespaceByDefault
+   */
+  public function testCanCheckIfValueIsSet() {
+    $session = $this->setUpDefaultSession();
+    $session->setValue('name', 'value');
+    $this->assertTrue($session->issetValue('name'));
+  }
+
+  /**
+   * @covers Sesshin\Session\Session::unsetValue
+   * @depends testValueIsSetToDefaultNamespaceByDefault
+   */
+  public function testCanUnsetValues() {
+    $session = $this->setUpDefaultSession();
+    $session->setValue('name', 'value');
+    $session->unsetValue('name');
+    $this->assertNull($session->getValue('name'));
+  }
+
+  /**
    * @covers Sesshin\Session\Session::getRequestsCounter
    */
   public function testCanGetRequestsCounter() {
@@ -288,7 +328,7 @@ class SessionTest extends TestCase {
     $this->assertSame(true, $session->isOpened());
     $this->setPropertyValue($session, 'opened', false);
     $this->assertSame(false, $session->isOpen());
-    $this->assertSame(false, $session->isOpened());    
+    $this->assertSame(false, $session->isOpened());
   }
 
   /**
