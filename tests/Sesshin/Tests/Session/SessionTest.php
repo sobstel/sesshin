@@ -101,6 +101,40 @@ class SessionTest extends TestCase {
   }
 
   /**
+   * @covers Sesshin\Session\Session::getUnsetValue
+   */
+  public function testCanGetAndUnsetValue() {
+    $session = $this->setUpDefaultSession();
+    $session->setValue('name', 'value');
+    $value = $session->getUnsetValue('name');
+    $this->assertEquals('value', $value);
+    $this->assertNull($session->getValue('name'));
+  }
+
+  /**
+   * @covers Sesshin\Session\Session::getValues
+   */
+  public function testCanGetAllValuesForNamespace() {
+    $session = $this->setUpDefaultSession();
+    $session->setValue('name1', 'value1');
+    $session->setValue('name2', 'value2');
+    $this->assertEquals(array('name1' => 'value1', 'name2' => 'value2'), $session->getValues());
+  }
+
+  /**
+   * @covers Sesshin\Session\Session::unsetValues
+   */
+  public function testCanUnsetAllValuesForNamespace() {
+    $session = $this->setUpDefaultSession();
+    $session->setValue('name1', 'value1');
+    $session->setValue('name2', 'value2');
+    $session->unsetValues();
+    $this->assertNull($session->getValue('name1'));
+    $this->assertNull($session->getValue('name2'));
+    $this->assertEmpty($session->getValues());
+  }
+
+  /**
    * @covers Sesshin\Session\Session::getRequestsCounter
    */
   public function testCanGetRequestsCounter() {
