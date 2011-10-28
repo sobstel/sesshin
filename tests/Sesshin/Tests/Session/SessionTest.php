@@ -278,6 +278,20 @@ class SessionTest extends TestCase {
   }
 
   /**
+   * @covers Sesshin\Session\Session::isOpen
+   * @covers Sesshin\Session\Session::isOpened
+   */
+  public function testCanCheckIfSessionIsOpened() {
+    $session = $this->setUpDefaultSession();
+    $this->setPropertyValue($session, 'opened', true);
+    $this->assertSame(true, $session->isOpen());
+    $this->assertSame(true, $session->isOpened());
+    $this->setPropertyValue($session, 'opened', false);
+    $this->assertSame(false, $session->isOpen());
+    $this->assertSame(false, $session->isOpened());    
+  }
+
+  /**
    * @covers Sesshin\Session\Session::setIdHandler
    * @covers Sesshin\Session\Session::getIdHandler
    */
