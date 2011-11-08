@@ -446,4 +446,23 @@ class SessionTest extends TestCase {
     unset($session['key']);
   }
 
+  /**
+   * @covers Sesshin\Session\Session::load
+   * @depends testOpenMethodLoadsSessionDataIfSessionExists
+   */
+  public function testLoadMethodFetchesDataFromStorage() {
+    $session = $this->setUpDefaultSession();
+    $session->getStorage()->expects($this->any())->method('fetch')->with($this->equalTo($session->getId()));    
+    $this->invokeMethod($session, 'load');
+  }
+
+  /**
+   * @covers Sesshin\Session\Session::load
+   */
+  public function testLoadMethodReturnsFalseIfNoDataInStorage() {
+    $session = $this->setUpDefaultSession();
+    $session->getStorage()->expects($this->any())->method('fetch')->will($this->returnValue(false));
+    $this->assertFalse($this->invokeMethod($session, 'load'));
+  }
+
 }
