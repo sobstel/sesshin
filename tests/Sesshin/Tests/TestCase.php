@@ -27,4 +27,15 @@ class TestCase extends \PHPUnit_Framework_TestCase {
     return $ref_prop;
   }
 
+  public function setMethodAccessible($object, $method_name) {
+    $ref_method = new \ReflectionMethod($object, $method_name);
+    $ref_method->setAccessible(true);
+    return $ref_method;
+  }
+
+  public function invokeMethod($object, $method_name, $args = array()) {
+    $ref_method = $this->setMethodAccessible($object, $method_name);
+    return $ref_method->invokeArgs($object, $args);
+  }
+
 }
