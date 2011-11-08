@@ -385,6 +385,46 @@ class SessionTest extends TestCase {
   }
 
   /**
+   * @covers Sesshin\Session\Session::shouldRegenerateId
+   */
+  public function testSessionIdShouldBeRegeneratedIfIdRequestsLimitReached() {
+    $session = new Session();
+    $this->setPropertyValue($session, 'requests_counter', 5);
+    $this->setPropertyValue($session, 'id_requests_limit', 5);
+    $this->assertSame(true, $this->invokeMethod($session, 'shouldRegenerateId'));
+  }
+
+  /**
+   * @covers Sesshin\Session\Session::shouldRegenerateId
+   */
+  public function testSessionIdShouldBeRegeneratedIfIdTtlLimitReached() {
+    $session = new Session();
+    $this->setPropertyValue($session, 'id_ttl', 60);
+    $this->setPropertyValue($session, 'regeneration_trace', time() - 90);
+    $this->assertSame(true, $this->invokeMethod($session, 'shouldRegenerateId'));
+  }
+
+  /**
+   * @covers Sesshin\Session\Session::shouldRegenerateId
+   */
+  public function testSessionIdShouldNotBeRegeneratedIfLimitsNotReached() {
+    $session = new Session();
+    $this->setPropertyValue($session, 'requests_counter', 5);
+    $this->setPropertyValue($session, 'id_requests_limit', 6);
+    $this->setPropertyValue($session, 'id_ttl', 60);
+    $this->setPropertyValue($session, 'regeneration_trace', time() - 30);
+    $this->assertSame(false, $this->invokeMethod($session, 'shouldRegenerateId'));
+  }
+
+  /**
+   * @covers Sesshin\Session\Session::shouldRegenerateId
+   */
+  public function testSessionIdShouldNotBeRegeneratedIfLimitsNotSet() {
+    $session = new Session();
+    $this->assertSame(false, $this->invokeMethod($session, 'shouldRegenerateId'));
+  }
+
+  /**
    * @covers Sesshin\Session\Session::setStorage
    * @covers Sesshin\Session\Session::getStorage
    */
