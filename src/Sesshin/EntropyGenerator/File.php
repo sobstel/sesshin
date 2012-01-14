@@ -23,10 +23,10 @@ class File implements EntropyGeneratorInterface {
 
   public function generate() {
     $entropy = file_get_contents($this->file, false, null, 0, $this->length);
-		if (empty($entropy)) {
-			throw new Exception('Entropy file is empty.');
-		}
-		return $entropy;
+    if (empty($entropy)) {
+      throw new Exception('Entropy file is empty.');
+    }
+    return $entropy;
   }
 
 }
