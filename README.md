@@ -1,7 +1,5 @@
 # Sesshin
 
-PHP advanced session management.
-
 Object-oriented, extendable advanced session handling component written with
 security in mind that mitigates attacks like Session Hijacking, Session Fixation,
 Session Exposure, Sesion Poisoning, Session Prediction.
@@ -23,6 +21,7 @@ Features:
   after specified time
 * convention over configuration (has defined default listener, storage, entropy 
   generator, fingerprint generator and ID storage)
+* 100% independent from insecure native PHP session extension
 * and some more...
 
 ## Requirements
@@ -47,8 +46,8 @@ $session = new Session();
 
 ### Create new session
 
-Only when `create()` now session cookie is created (for native PHP session
-handler it's all the time).
+Only when `create()` called, session cookie is created (for native PHP session
+handler cookie is present all the time whether it's needed or not).
 
 ```php
 $session->create();
