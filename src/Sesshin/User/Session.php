@@ -12,7 +12,7 @@ namespace Sesshin\User;
 
 class Session extends \Sesshin\Session\Session {
 
-	private $user_id_key = '_user_id';
+  private $user_id_key = '_user_id';
 
   public function setUserIdKey($user_id_key) {
     $this->user_id_key = $user_id_key;
