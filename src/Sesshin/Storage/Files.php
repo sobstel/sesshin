@@ -10,6 +10,8 @@
 
 namespace Sesshin\Storage;
 
+use DirectoryIterator;
+
 class Files extends Storage {
 
 	/**
