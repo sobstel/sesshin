@@ -24,6 +24,8 @@ Features:
 * 100% independent from insecure native PHP session extension
 * and some more...
 
+[![Build Status](https://travis-ci.org/sobstel/sesshin.png?branch=master)](https://travis-ci.org/sobstel/sesshin)
+
 ## Requirements
 
 * PHP 5.3
