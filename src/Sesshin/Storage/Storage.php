@@ -41,7 +41,7 @@ abstract class Storage implements StorageInterface {
     if ($prefix) {
       $prefix .= '.';
     }
-    return $prefix.$id;
+    return $prefix.$key;
   }
   
   public function store($key, $value, $ttl = null) {
@@ -51,7 +51,7 @@ abstract class Storage implements StorageInterface {
   abstract protected function doStore($key, $value, $ttl = null);
   
   public function fetch($key) {
-    $value = @unseralize($this->doFetch($this->prepareKey($key)));
+    $value = @unserialize($this->doFetch($this->prepareKey($key)));
     if ($value === false) {
       return false;
     }
