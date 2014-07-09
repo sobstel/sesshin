@@ -1,4 +1,5 @@
 {
+    "name": "sobstel/sesshin",
     "description": "PHP secure advanced session manager",
     "keywords": ["session"],
     "type": "library",
