@@ -24,7 +24,7 @@ class Session implements \ArrayAccess {
   const EVENT_EXPIRED = 'sesshin.session.expired';
   const EVENT_INVALID_FINGERPRINT = 'sesshin.session.invalid_fingerprint';
 
-  /** @var Sesshin\Id\Handler */
+  /** @var \Sesshin\Id\Handler */
   private $id_handler;
 
   /** @var int Number of requests after which id is regeneratd */
@@ -39,10 +39,10 @@ class Session implements \ArrayAccess {
   /** @var int */
   private $regeneration_trace;
 
-  /** @var Sesshin\Storage\StorageIntrface */
+  /** @var \Sesshin\Storage\StorageIntrface */
   private $storage;
 
-  /** @var Sesshin\Listener\Listener */
+  /** @var \Sesshin\Listener\Listener */
   private $listener;
 
   /** @var array Session values */
@@ -60,7 +60,7 @@ class Session implements \ArrayAccess {
   /** @var int */
   private $requests_counter;
 
-  /** @var array of Sesshin\FingerprintGenerator\FingerprintGeneratorInterface */
+  /** @var array of \Sesshin\FingerprintGenerator\FingerprintGeneratorInterface */
   private $fingerprint_generators = array();
 
   /** @var string */
@@ -203,7 +203,7 @@ class Session implements \ArrayAccess {
    */
   public function regenerateId() {
     if (!$this->id_regenerated) {
-      $this->getStorage()->destroy($this->getId());
+      $this->getStorage()->delete($this->getId());
       $this->getIdHandler()->generateId();
 
       $this->regeneration_trace = time();
@@ -326,7 +326,7 @@ class Session implements \ArrayAccess {
    *
    * It must be called before {@link self::open()}.
    *
-   * @param type $ttl
+   * @param int $ttl
    */
   public function setTtl($ttl) {
     if ($this->isOpened()) {

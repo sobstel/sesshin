@@ -30,7 +30,7 @@ class Memcache extends Storage {
     return $this->getMemcache()->get($key);
 	}
 
-	protected function doDelete($id) {
+	protected function doDelete($key) {
     // Memcache::delete() is unreliable
     return $this->getMemcache()->set($key, false, null, -1);
 	}

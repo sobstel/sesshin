@@ -38,6 +38,9 @@ class Cookie implements StorageInterface {
     $this->http_only = $http_only;
   }
 
+  /**
+   * @param string $id
+   */
   public function setId($id) {
     if (setcookie($this->name, $id, 0, $this->path, $this->domain, $this->secure, $this->http_only)) {
       $this->id = $id;

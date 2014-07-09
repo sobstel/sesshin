@@ -38,7 +38,7 @@ class Listener {
    * Bind (connect) callback to a given event.
    *
    * @param string $event Event name
-   * @param callback $callback Listener callback
+   * @param callable $callback Listener callback
    */
   public function bind($event, $callback, $priority = 10) {
     $this->getQueue($event)->insert($callback, $priority);
@@ -57,6 +57,8 @@ class Listener {
 
     if (!empty($queue)) {
       array_unshift($args, $event);
+
+      $result = 0;
 
       foreach ($queue as $callback) {
         $result = call_user_func_array($callback, $args);

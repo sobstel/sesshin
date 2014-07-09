@@ -43,14 +43,14 @@ class Handler {
   /**
    * Sets entropy that is used to generate session id.
    *
-   * @param Entropy\EntropyGeneratorInterface $entropy_generator
+   * @param EntropyGenerator\EntropyGeneratorInterface $entropy_generator
    */
   public function setEntropyGenerator(EntropyGenerator\EntropyGeneratorInterface $entropy_generator) {
     $this->entropy_generator = $entropy_generator;
   }
   
   /**
-   * @return Entropy\EntropyGeneratorInterface
+   * @return EntropyGenerator\EntropyGeneratorInterface
    */
   public function getEntropyGenerator() {
     if (!$this->entropy_generator) {
