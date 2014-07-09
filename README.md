@@ -4,6 +4,9 @@ Object-oriented, extendable advanced session handling component written with
 security in mind that mitigates attacks like Session Hijacking, Session Fixation,
 Session Exposure, Sesion Poisoning, Session Prediction.
 
+One of previous versions of this lib has been awarded 1st place in 
+[php.pl contest](http://wortal.php.pl/phppl/Wortal/Spolecznosc/Konkursy/Konkurs-Pozyteczne-i-praktyczne-biblioteki-Wyniki).
+
 Features:
 
 * smart session expiry control
@@ -32,19 +35,9 @@ Features:
 
 ## Usage
 
-### Initialization
+### Installation
 
-```php
-require_once __DIR__.'/src/Sesshin/ClassLoader/ClassLoader.php';
-
-use Sesshin\ClassLoader\ClassLoader;
-use Sesshin\Session\Session;
-
-$loader = new ClassLoader();
-$loader->register();
-
-$session = new Session();
-```
+Use composer: https://packagist.org/packages/sobstel/sesshin
 
 ### Create new session
 

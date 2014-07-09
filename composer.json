@@ -1,0 +1,25 @@
+{
+    "description": "PHP secure advanced session manager",
+    "keywords": ["session"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Przemek Sobstel",
+            "email": "przemek@sobstel.org",
+            "homepage": "http://sobstel.org"
+        }
+    ],
+    "support": {
+          "email": "przemek@sobstel.org"
+    },
+    "autoload": {
+        "psr-0": { 
+            "Sesshin\\Tests": "tests/",
+            "Sesshin": "src/"
+        }
+    },
+    "require": {
+        "php": ">=5.3.3"
+    }
+}
