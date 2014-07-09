@@ -39,7 +39,7 @@ class Session implements \ArrayAccess {
   /** @var int */
   private $regeneration_trace;
 
-  /** @var \Sesshin\Storage\StorageIntrface */
+  /** @var \Sesshin\Storage\StorageInterface */
   private $storage;
 
   /** @var \Sesshin\Listener\Listener */
