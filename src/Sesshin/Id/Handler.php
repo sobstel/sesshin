@@ -17,7 +17,7 @@ class Handler {
   /** @var \Sesshin\Id\Storage\StorageInterface */
   private $id_storage;
 
-  /** @var \Sesshin\Entropy\EntropyGeneratorInterface */
+  /** @var \Sesshin\EntropyGenerator\EntropyGeneratorInterface */
   private $entropy_generator;
 
   /** @var string Hash algo used to generate session ID (it hashes entropy). */
