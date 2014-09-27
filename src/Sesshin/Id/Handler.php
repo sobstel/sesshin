@@ -13,23 +13,23 @@ use Sesshin\Id\Storage;
 use Sesshin\EntropyGenerator;
 
 class Handler {
-  
-  /** @var Storage\StorageInterface */
+
+  /** @var \Sesshin\Id\Storage\StorageInterface */
   private $id_storage;
-  
-  /** @var Entropy\EntropyGeneratorInterface */
+
+  /** @var \Sesshin\Entropy\EntropyGeneratorInterface */
   private $entropy_generator;
-  
+
   /** @var string Hash algo used to generate session ID (it hashes entropy). */
   private $hash_algo = 'sha1';
-  
+
   /**
-   * @param Storage\StorageInterface $id_storage 
+   * @param \Sesshin\Id\Storage\StorageInterface $id_storage
    */
   public function setIdStorage(Storage\StorageInterface $id_storage) {
     $this->id_storage = $id_storage;
   }
-  
+
   /**
    * @return Storage\StorageInterface
    */
@@ -39,18 +39,18 @@ class Handler {
     }
     return $this->id_storage;
   }
-  
+
   /**
    * Sets entropy that is used to generate session id.
    *
-   * @param EntropyGenerator\EntropyGeneratorInterface $entropy_generator
+   * @param \Sesshin\EntropyGenerator\EntropyGeneratorInterface $entropy_generator
    */
   public function setEntropyGenerator(EntropyGenerator\EntropyGeneratorInterface $entropy_generator) {
     $this->entropy_generator = $entropy_generator;
   }
-  
+
   /**
-   * @return EntropyGenerator\EntropyGeneratorInterface
+   * @return \Sesshin\EntropyGenerator\EntropyGeneratorInterface
    */
   public function getEntropyGenerator() {
     if (!$this->entropy_generator) {
@@ -58,7 +58,7 @@ class Handler {
     }
     return $this->entropy_generator;
   }
-  
+
   /**
    * @param string Hash algorith accepted by hash extension.
    */
@@ -69,35 +69,35 @@ class Handler {
       throw new Exception('Provided algo is not valid (not on hash_algos() list)');
     }
   }
-  
+
   /**
-   * @return string 
+   * @return string
    */
   public function getHashAlgo() {
     return $this->hash_algo;
   }
-  
+
   /**
-   * @return string 
+   * @return string
    */
   public function generateId() {
     $id = hash($this->getHashAlgo(), $this->getEntropyGenerator()->generate());
     $this->setId($id);
     return $this->getId();
   }
-  
+
   public function setId($id) {
     $this->getIdStorage()->setId($id);
   }
-  
+
   public function getId() {
     return $this->getIdStorage()->getId();
   }
-  
+
   public function issetId() {
     return $this->getIdStorage()->issetId();
   }
-  
+
   public function unsetId() {
     return $this->getIdStorage()->unsetId();
   }
