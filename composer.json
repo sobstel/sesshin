@@ -12,15 +12,21 @@
         }
     ],
     "support": {
-          "email": "przemek@sobstel.org"
+        "email": "przemek@sobstel.org"
     },
     "autoload": {
-        "psr-0": { 
+        "psr-0": {
             "Sesshin\\Tests": "tests/",
             "Sesshin": "src/"
         }
     },
     "require": {
         "php": ">=5.3.3"
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
     }
 }
