@@ -28,6 +28,7 @@ Features:
 * and some more...
 
 [![Build Status](https://travis-ci.org/sobstel/sesshin.png?branch=master)](https://travis-ci.org/sobstel/sesshin)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/sobstel/sesshin/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/sobstel/sesshin/?branch=master)
 
 ## Usage
 
