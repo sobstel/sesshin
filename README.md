@@ -1,4 +1,4 @@
-# Sesshin
+3# Sesshin
 
 Object-oriented, extendable advanced session handling component written with
 security in mind that mitigates attacks like Session Hijacking, Session Fixation,
@@ -73,18 +73,20 @@ $session->setIdRequestsLimit(10);
 $session->regenerateId();
 ```
 
-### Observe (listen) special events
+### Listen special events
 
 ```php
-$listener = $session->getListener();
+use Sesshin\Event;
 
-$listener->bind(Session::EVENT_NO_DATA_OR_EXPIRED, function($event, $session){
+$eventEmitter = $session->getEventEmitter();
+
+$eventEmitter->addListener(Event::NO_DATA_OR_EXPIRED, function(Event $event) {
   die('Session expired or session adoption attack!');
 });
-$listener->bind(Session::EVENT_NO_DATA_OR_EXPIRED, function($event, $session){
+$eventEmitter->addListener(Event::NO_DATA_OR_EXPIRED, function(Event $event) {
   die(sprintf('Session %s expired!', $session->getId()));
 });
-$listener->bind(Session::EVENT_INVALID_FINGERPRINT, function($event, $session){
+$eventEmitter->addListener(Event::INVALID_FINGERPRINT, function(Event $event) {
   die('Invalid fingerprint, possible attack!');
 });
 ```

@@ -1,7 +1,6 @@
 <?php
 namespace Sesshin;
 
-use Sesshin\Session;
 use League\Event\Event as BaseEvent;
 
 class Event extends BaseEvent

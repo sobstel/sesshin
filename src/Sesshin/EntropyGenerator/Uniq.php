@@ -10,10 +10,10 @@
 
 namespace Sesshin\EntropyGenerator;
 
-class Uniq implements EntropyGeneratorInterface {
-  
-  public function generate() {
-    return uniqid(mt_rand(), true);
-  }
-
+class Uniq implements EntropyGeneratorInterface
+{
+    public function generate()
+    {
+        return uniqid(mt_rand(), true);
+    }
 }

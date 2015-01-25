@@ -10,11 +10,10 @@
 
 namespace Sesshin\EntropyGenerator;
 
-interface EntropyGeneratorInterface {
-  
-  /**
-   * @return string
-   */
-  public function generate();
-
+interface EntropyGeneratorInterface
+{
+    /**
+    * @return string
+    */
+    public function generate();
 }
