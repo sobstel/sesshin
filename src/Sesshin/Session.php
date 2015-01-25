@@ -8,21 +8,19 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Sesshin\Session;
+namespace Sesshin;
+
 use Sesshin\Exception;
 use Sesshin\FingerprintGenerator;
 use Sesshin\Id;
-use Sesshin\Listener;
 use Sesshin\Storage;
+use League\Event\Emitter as EventEmitter;
+use Sesshin\Event;
 
 class Session implements \ArrayAccess {
 
   const DEFAULT_NAMESPACE = 'default';
   const METADATA_NAMESPACE = '__metadata__';
-
-  const EVENT_NO_DATA_OR_EXPIRED = 'sesshin.session.no_data_or_expired';
-  const EVENT_EXPIRED = 'sesshin.session.expired';
-  const EVENT_INVALID_FINGERPRINT = 'sesshin.session.invalid_fingerprint';
 
   /** @var \Sesshin\Id\Handler */
   private $id_handler;
@@ -42,8 +40,8 @@ class Session implements \ArrayAccess {
   /** @var \Sesshin\Storage\StorageInterface */
   private $storage;
 
-  /** @var \Sesshin\Listener\Listener */
-  private $listener;
+  /** @var EventEmitter */
+  private $eventEmitter;
 
   /** @var array Session values */
   private $values = array();
@@ -123,11 +121,11 @@ class Session implements \ArrayAccess {
         $this->load();
 
         if (!$this->getFirstTrace()) {
-          $this->getListener()->trigger(self::EVENT_NO_DATA_OR_EXPIRED, array($this));
+          $this->getEventEmitter()->emit(new Event(Event::NO_DATA_OR_EXPIRED, $this));
         } elseif ($this->isExpired()) {
-          $this->getListener()->trigger(self::EVENT_EXPIRED, array($this));
+          $this->getEventEmitter()->emit(new Event(Event::EXPIRED, $this));
         } elseif ($this->generateFingerprint() != $this->getFingerprint()) {
-          $this->getListener()->trigger(self::EVENT_INVALID_FINGERPRINT, array($this));
+          $this->getEventEmitter()->emit(new Event(Event::INVALID_FINGERPRINT, $this));
         } else {
           $this->opened = true;
           $this->requests_counter += 1;
@@ -257,15 +255,15 @@ class Session implements \ArrayAccess {
     return $this->storage;
   }
 
-  public function setListener(Listener\Listener $listener) {
-    $this->listener = $listener;
+  public function setEventEmitter(EventEmitter $eventEmitter) {
+    $this->eventEmitter = $eventEmitter;
   }
 
-  public function getListener() {
-    if (!$this->listener) {
-      $this->listener = new Listener\Listener();
+  public function getEventEmitter() {
+    if (!$this->eventEmitter) {
+      $this->eventEmitter = new EventEmitter();
     }
-    return $this->listener;
+    return $this->eventEmitter;
   }
 
   public function addFingerprintGenerator(FingerprintGenerator\FingerprintGeneratorInterface $fingerprint_generator) {

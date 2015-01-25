@@ -8,14 +8,15 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Sesshin\Tests\Session;
+namespace Sesshin\Tests;
 use Sesshin\Tests\TestCase;
-use Sesshin\Session\Session;
+use Sesshin\Session;
+use Sesshin\Event;
 
 class SessionTest extends TestCase {
 
   /**
-   * @var Sesshin\Session\Session
+   * @var Sesshin\Session
    */
   private function setUpDefaultSession($session = null) {
     if (is_null($session)) {
@@ -28,14 +29,14 @@ class SessionTest extends TestCase {
     $storage = $this->getMock('\Sesshin\Storage\StorageInterface', array('store', 'fetch', 'delete'));
     $session->setStorage($storage);
 
-    $listener = $this->getMock('\Sesshin\Listener\Listener', array('trigger', 'bind', 'getQueue'));
-    $session->setListener($listener);
+    $eventEmitter = $this->getMock('\League\Event\Emitter', array('emit', 'addListener'));
+    $session->setEventEmitter($eventEmitter);
 
     return $session;
   }
 
   /**
-   * @covers Sesshin\Session\Session::setValue
+   * @covers Sesshin\Session::setValue
    */
   public function testValueIsSetToDefaultNamespaceByDefault() {
     $session = $this->setUpDefaultSession();
@@ -48,7 +49,7 @@ class SessionTest extends TestCase {
   }
 
   /**
-   * @covers Sesshin\Session\Session::setValue
+   * @covers Sesshin\Session::setValue
    */
   public function testCanSetValueToCustomNamespace() {
     $session = $this->setUpDefaultSession();
@@ -61,7 +62,7 @@ class SessionTest extends TestCase {
   }
 
   /**
-   * @covers Sesshin\Session\Session::getValue
+   * @covers Sesshin\Session::getValue
    * @depends testValueIsSetToDefaultNamespaceByDefault
    */
   public function testCanGetValue() {
@@ -71,7 +72,7 @@ class SessionTest extends TestCase {
   }
 
   /**
-   * @covers Sesshin\Session\Session::getValue
+   * @covers Sesshin\Session::getValue
    * @depends testValueIsSetToDefaultNamespaceByDefault
    */
   public function testCanGetValueMethodReturnsNullIfNoValueForGivenName() {
@@ -80,7 +81,7 @@ class SessionTest extends TestCase {
   }
 
   /**
-   * @covers Sesshin\Session\Session::issetValue
+   * @covers Sesshin\Session::issetValue
    * @depends testValueIsSetToDefaultNamespaceByDefault
    */
   public function testCanCheckIfValueIsSet() {
@@ -90,7 +91,7 @@ class SessionTest extends TestCase {
   }
 
   /**
-   * @covers Sesshin\Session\Session::unsetValue
+   * @covers Sesshin\Session::unsetValue
    * @depends testValueIsSetToDefaultNamespaceByDefault
    */
   public function testCanUnsetValues() {
@@ -101,7 +102,7 @@ class SessionTest extends TestCase {
   }
 
   /**
-   * @covers Sesshin\Session\Session::getUnsetValue
+   * @covers Sesshin\Session::getUnsetValue
    */
   public function testCanGetAndUnsetValue() {
     $session = $this->setUpDefaultSession();
@@ -112,7 +113,7 @@ class SessionTest extends TestCase {
   }
 
   /**
-   * @covers Sesshin\Session\Session::getValues
+   * @covers Sesshin\Session::getValues
    */
   public function testCanGetAllValuesForNamespace() {
     $session = $this->setUpDefaultSession();
@@ -122,7 +123,7 @@ class SessionTest extends TestCase {
   }
 
   /**
-   * @covers Sesshin\Session\Session::unsetValues
+   * @covers Sesshin\Session::unsetValues
    */
   public function testCanUnsetAllValuesForNamespace() {
     $session = $this->setUpDefaultSession();
@@ -135,7 +136,7 @@ class SessionTest extends TestCase {
   }
 
   /**
-   * @covers Sesshin\Session\Session::getRequestsCounter
+   * @covers Sesshin\Session::getRequestsCounter
    */
   public function testCanGetRequestsCounter() {
     $session = $this->setUpDefaultSession();
@@ -145,7 +146,7 @@ class SessionTest extends TestCase {
   }
 
   /**
-   * @covers Sesshin\Session\Session::create
+   * @covers Sesshin\Session::create
    */
   public function testCreateMethodGeneratesId() {
     $session = $this->setUpDefaultSession();
@@ -154,7 +155,7 @@ class SessionTest extends TestCase {
   }
 
   /**
-   * @covers Sesshin\Session\Session::create
+   * @covers Sesshin\Session::create
    */
   public function testCreateMethodUnsetsAllValues() {
     $session = $this->setUpDefaultSession();
@@ -164,7 +165,7 @@ class SessionTest extends TestCase {
   }
 
   /**
-   * @covers Sesshin\Session\Session::create
+   * @covers Sesshin\Session::create
    */
   public function testCreateMethodResetsFirstTrace() {
     $session = $this->setUpDefaultSession();
@@ -174,7 +175,7 @@ class SessionTest extends TestCase {
   }
 
   /**
-   * @covers Sesshin\Session\Session::create
+   * @covers Sesshin\Session::create
    */
   public function testCreateMethodResetsLastTrace() {
     $session = $this->setUpDefaultSession();
@@ -184,7 +185,7 @@ class SessionTest extends TestCase {
   }
 
   /**
-   * @covers Sesshin\Session\Session::create
+   * @covers Sesshin\Session::create
    */
   public function testCreateMethodResetsRequestsCounter() {
     $session = $this->setUpDefaultSession();
@@ -193,7 +194,7 @@ class SessionTest extends TestCase {
   }
 
   /**
-   * @covers Sesshin\Session\Session::create
+   * @covers Sesshin\Session::create
    */
   public function testCreateMethodResetsIdRegenerationTrace() {
     $session = $this->setUpDefaultSession();
@@ -211,16 +212,16 @@ class SessionTest extends TestCase {
   }
 
   /**
-   * @covers Sesshin\Session\Session::create
+   * @covers Sesshin\Session::create
    */
   public function testCreateMethodGeneratesFingerprint() {
-    $session = $this->setUpDefaultSession($this->getMock('\Sesshin\Session\Session', array('generateFingerprint')));
+    $session = $this->setUpDefaultSession($this->getMock('\Sesshin\Session', array('generateFingerprint')));
     $session->expects($this->once())->method('generateFingerprint');
     $session->create();
   }
 
   /**
-   * @covers Sesshin\Session\Session::create
+   * @covers Sesshin\Session::create
    */
   public function testCreateMethodOpensSession() {
     $session = $this->setUpDefaultSession();
@@ -229,10 +230,10 @@ class SessionTest extends TestCase {
   }
 
   /**
-   * @covers Sesshin\Session\Session::open
+   * @covers Sesshin\Session::open
    */
   public function testOpenMethodWhenCalledWithTrueThenCreatesNewSessionIfSessionNotExistsAlready() {
-    $session = $this->setUpDefaultSession($this->getMock('\Sesshin\Session\Session', array('create')));
+    $session = $this->setUpDefaultSession($this->getMock('\Sesshin\Session', array('create')));
     $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(false));
     $session->expects($this->once())->method('create');
 
@@ -240,10 +241,10 @@ class SessionTest extends TestCase {
   }
 
   /**
-   * @covers Sesshin\Session\Session::open
+   * @covers Sesshin\Session::open
    */
   public function testOpenMethodWhenCalledWithTrueThenDoesNotCreateNewSessionIfSessionIdExistsAlready() {
-    $session = $this->setUpDefaultSession($this->getMock('\Sesshin\Session\Session', array('create')));
+    $session = $this->setUpDefaultSession($this->getMock('\Sesshin\Session', array('create')));
     $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(true));
     $session->expects($this->never())->method('create');
 
@@ -251,20 +252,20 @@ class SessionTest extends TestCase {
   }
 
   /**
-   * @covers Sesshin\Session\Session::open
+   * @covers Sesshin\Session::open
    */
   public function testOpenMethodWhenCalledWithFalseThenDoesNotCreateNewSession() {
-    $session = $this->setUpDefaultSession($this->getMock('\Sesshin\Session\Session', array('create')));
+    $session = $this->setUpDefaultSession($this->getMock('\Sesshin\Session', array('create')));
     $session->expects($this->never())->method('create');
 
     $session->open(false);
   }
 
   /**
-   * @covers Sesshin\Session\Session::open
+   * @covers Sesshin\Session::open
    */
   public function testOpenMethodLoadsSessionDataIfSessionExists() {
-    $session = $this->setUpDefaultSession($this->getMock('\Sesshin\Session\Session', array('create', 'load')));
+    $session = $this->setUpDefaultSession($this->getMock('\Sesshin\Session', array('create', 'load')));
     $session->expects($this->any())->method('isOpened')->will($this->returnValue(false));
     $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(true));
     $session->expects($this->once())->method('load');
@@ -273,10 +274,10 @@ class SessionTest extends TestCase {
   }
 
   /**
-   * @covers Sesshin\Session\Session::open
+   * @covers Sesshin\Session::open
    */
   public function testOpenMethodDoesNotLoadSessionDataIfSessionNotExists() {
-    $session = $this->setUpDefaultSession($this->getMock('\Sesshin\Session\Session', array('create', 'load')));
+    $session = $this->setUpDefaultSession($this->getMock('\Sesshin\Session', array('create', 'load')));
     $session->expects($this->any())->method('isOpened')->will($this->returnValue(false));
     $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(false));
     $session->expects($this->never())->method('load');
@@ -285,28 +286,28 @@ class SessionTest extends TestCase {
   }
 
   /**
-   * @covers Sesshin\Session\Session::open
+   * @covers Sesshin\Session::open
    */
   public function testOpenMethodTriggersSessionNoDataOrExpiredEventIfNoDataPresentAfterLoad() {
-    $session = $this->setUpDefaultSession($this->getMock('\Sesshin\Session\Session', array('create', 'load', 'getFirstTrace')));
+    $session = $this->setUpDefaultSession($this->getMock('\Sesshin\Session', array('create', 'load', 'getFirstTrace')));
     $session->expects($this->any())->method('isOpened')->will($this->returnValue(false));
     $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(true));
     $session->expects($this->once())->method('getFirstTrace')->will($this->returnValue(false));
-    $session->getListener()->expects($this->once())->method('trigger')->with($this->equalTo(Session::EVENT_NO_DATA_OR_EXPIRED));
+    $session->getEventEmitter()->expects($this->once())->method('emit')->with($this->equalTo(new Event(Event::NO_DATA_OR_EXPIRED, $session)));
 
     $session->open();
   }
 
   /**
-   * @covers Sesshin\Session\Session::open
+   * @covers Sesshin\Session::open
    */
   public function testOpenMethodTriggersSessionExpiredEventIfSessionExpired() {
-    $session = $this->setUpDefaultSession($this->getMock('\Sesshin\Session\Session', array('create', 'load', 'getFirstTrace', 'isExpired')));
+    $session = $this->setUpDefaultSession($this->getMock('\Sesshin\Session', array('create', 'load', 'getFirstTrace', 'isExpired')));
     $session->expects($this->any())->method('isOpened')->will($this->returnValue(false));
     $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(true));
     $session->expects($this->once())->method('getFirstTrace')->will($this->returnValue(time()));
     $session->expects($this->once())->method('isExpired')->will($this->returnValue(true));
-    $session->getListener()->expects($this->once())->method('trigger')->with($this->equalTo(Session::EVENT_EXPIRED));
+    $session->getEventEmitter()->expects($this->once())->method('emit')->with($this->equalTo(new Event(Event::EXPIRED, $session)));
 
     $session->open();
   }
@@ -315,27 +316,27 @@ class SessionTest extends TestCase {
    * Fingerpring is generated, so it can be compared with the one in session
    * metadata for session validity.
    *
-   * @covers Sesshin\Session\Session::open
+   * @covers Sesshin\Session::open
    */
   public function testOpenMethodTriggersInvalidFingerprintEventIfLoadedFingerprintInvalid() {
-    $session = $this->setUpDefaultSession($this->getMock('\Sesshin\Session\Session', array('create', 'load', 'getFirstTrace', 'isExpired', 'getFingerprint', 'generateFingerprint')));
+    $session = $this->setUpDefaultSession($this->getMock('\Sesshin\Session', array('create', 'load', 'getFirstTrace', 'isExpired', 'getFingerprint', 'generateFingerprint')));
     $session->expects($this->any())->method('isOpened')->will($this->returnValue(false));
     $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(true));
     $session->expects($this->once())->method('getFirstTrace')->will($this->returnValue(time()));
     $session->expects($this->once())->method('isExpired')->will($this->returnValue(false));
     $session->expects($this->once())->method('getFingerprint')->will($this->returnValue('abc'));
     $session->expects($this->once())->method('generateFingerprint')->will($this->returnValue('def'));
-    $session->getListener()->expects($this->once())->method('trigger')->with($this->equalTo(Session::EVENT_INVALID_FINGERPRINT));
+    $session->getEventEmitter()->expects($this->once())->method('emit')->with($this->equalTo(new Event(Event::INVALID_FINGERPRINT, $session)));
 
     $session->open();
   }
 
   /**
-   * @covers Sesshin\Session\Session::open
+   * @covers Sesshin\Session::open
    * @depends testCanGetRequestsCounter
    */
   public function testOpenMethodOpenSessionAndIncrementsRequestsCounter() {
-    $session = $this->setUpDefaultSession($this->getMock('\Sesshin\Session\Session', array('create', 'load', 'getFirstTrace', 'isExpired', 'getFingerprint', 'generateFingerprint')));
+    $session = $this->setUpDefaultSession($this->getMock('\Sesshin\Session', array('create', 'load', 'getFirstTrace', 'isExpired', 'getFingerprint', 'generateFingerprint')));
     $session->expects($this->any())->method('isOpened')->will($this->returnValue(false));
     $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(true));
     $session->expects($this->once())->method('getFirstTrace')->will($this->returnValue(time()));
@@ -352,8 +353,8 @@ class SessionTest extends TestCase {
   }
 
   /**
-   * @covers Sesshin\Session\Session::isOpen
-   * @covers Sesshin\Session\Session::isOpened
+   * @covers Sesshin\Session::isOpen
+   * @covers Sesshin\Session::isOpened
    */
   public function testCanCheckIfSessionIsOpened() {
     $session = $this->setUpDefaultSession();
@@ -366,8 +367,8 @@ class SessionTest extends TestCase {
   }
 
   /**
-   * @covers Sesshin\Session\Session::setIdHandler
-   * @covers Sesshin\Session\Session::getIdHandler
+   * @covers Sesshin\Session::setIdHandler
+   * @covers Sesshin\Session::getIdHandler
    */
   public function testCanSetGetIdHandler() {
     $session = new Session();
@@ -377,7 +378,7 @@ class SessionTest extends TestCase {
   }
 
   /**
-   * @covers Sesshin\Session\Session::getIdHandler
+   * @covers Sesshin\Session::getIdHandler
    */
   public function testUsesDefaultIdHandlerIfNotSet() {
     $session = new Session();
@@ -385,7 +386,7 @@ class SessionTest extends TestCase {
   }
 
   /**
-   * @covers Sesshin\Session\Session::shouldRegenerateId
+   * @covers Sesshin\Session::shouldRegenerateId
    */
   public function testSessionIdShouldBeRegeneratedIfIdRequestsLimitReached() {
     $session = new Session();
@@ -395,7 +396,7 @@ class SessionTest extends TestCase {
   }
 
   /**
-   * @covers Sesshin\Session\Session::shouldRegenerateId
+   * @covers Sesshin\Session::shouldRegenerateId
    */
   public function testSessionIdShouldBeRegeneratedIfIdTtlLimitReached() {
     $session = new Session();
@@ -405,7 +406,7 @@ class SessionTest extends TestCase {
   }
 
   /**
-   * @covers Sesshin\Session\Session::shouldRegenerateId
+   * @covers Sesshin\Session::shouldRegenerateId
    */
   public function testSessionIdShouldNotBeRegeneratedIfLimitsNotReached() {
     $session = new Session();
@@ -417,7 +418,7 @@ class SessionTest extends TestCase {
   }
 
   /**
-   * @covers Sesshin\Session\Session::shouldRegenerateId
+   * @covers Sesshin\Session::shouldRegenerateId
    */
   public function testSessionIdShouldNotBeRegeneratedIfLimitsNotSet() {
     $session = new Session();
@@ -425,8 +426,8 @@ class SessionTest extends TestCase {
   }
 
   /**
-   * @covers Sesshin\Session\Session::setStorage
-   * @covers Sesshin\Session\Session::getStorage
+   * @covers Sesshin\Session::setStorage
+   * @covers Sesshin\Session::getStorage
    */
   public function testCanSetGetStorage() {
     $session = new Session();
@@ -436,7 +437,7 @@ class SessionTest extends TestCase {
   }
 
   /**
-   * @covers Sesshin\Session\Session::getStorage
+   * @covers Sesshin\Session::getStorage
    */
   public function testUsesFilesStorageIfNotSet() {
     $session = new Session();
@@ -444,60 +445,60 @@ class SessionTest extends TestCase {
   }
 
   /**
-   * @covers Sesshin\Session\Session::setListener
-   * @covers Sesshin\Session\Session::getListener
+   * @covers Sesshin\Session::setEventEmitter
+   * @covers Sesshin\Session::getEventEmitter
    */
-  public function testCanSetGetListener() {
+  public function testCanSetGetEventEmitter() {
     $session = new Session();
-    $listener = new \Sesshin\Listener\Listener();
-    $session->setListener($listener);
-    $this->assertSame($listener, $session->getListener());
+    $eventEmitter = new \League\Event\Emitter();
+    $session->setEventEmitter($eventEmitter);
+    $this->assertSame($eventEmitter, $session->getEventEmitter());
   }
 
   /**
-   * @covers Sesshin\Session\Session::getListener
+   * @covers Sesshin\Session::getEventEmitter
    */
-  public function testUsesDefaultListenerIfNotSet() {
+  public function testUsesDefaultEventEmitterIfNotSet() {
     $session = new Session();
-    $this->assertEquals('Sesshin\Listener\Listener', get_class($session->getListener()));
+    $this->assertEquals('League\Event\Emitter', get_class($session->getEventEmitter()));
   }
 
   /**
-   * @covers Sesshin\Session\Session::offsetSet
-   * @covers Sesshin\Session\Session::offsetGet
-   * @covers Sesshin\Session\Session::offsetExists
-   * @covers Sesshin\Session\Session::offsetUnset
+   * @covers Sesshin\Session::offsetSet
+   * @covers Sesshin\Session::offsetGet
+   * @covers Sesshin\Session::offsetExists
+   * @covers Sesshin\Session::offsetUnset
    */
   public function testImplementsArrayAccessForSessionValues() {
-    $session = $this->getMock('\Sesshin\Session\Session', array('setValue'));
+    $session = $this->getMock('\Sesshin\Session', array('setValue'));
     $session->expects($this->once())->method('setValue')->with($this->equalTo('key'), $this->equalTo('value'));
     $session['key'] = 'value';
 
-    $session = $this->getMock('\Sesshin\Session\Session', array('getValue'));
+    $session = $this->getMock('\Sesshin\Session', array('getValue'));
     $session->expects($this->once())->method('getValue')->with($this->equalTo('key'));
     $session['key'];
 
-    $session = $this->getMock('\Sesshin\Session\Session', array('issetValue'));
+    $session = $this->getMock('\Sesshin\Session', array('issetValue'));
     $session->expects($this->once())->method('issetValue')->with($this->equalTo('key'));
     isset($session['key']);
 
-    $session = $this->getMock('\Sesshin\Session\Session', array('unsetValue'));
+    $session = $this->getMock('\Sesshin\Session', array('unsetValue'));
     $session->expects($this->once())->method('unsetValue')->with($this->equalTo('key'));
     unset($session['key']);
   }
 
   /**
-   * @covers Sesshin\Session\Session::load
+   * @covers Sesshin\Session::load
    * @depends testOpenMethodLoadsSessionDataIfSessionExists
    */
   public function testLoadMethodFetchesDataFromStorage() {
     $session = $this->setUpDefaultSession();
-    $session->getStorage()->expects($this->any())->method('fetch')->with($this->equalTo($session->getId()));    
+    $session->getStorage()->expects($this->any())->method('fetch')->with($this->equalTo($session->getId()));
     $this->invokeMethod($session, 'load');
   }
 
   /**
-   * @covers Sesshin\Session\Session::load
+   * @covers Sesshin\Session::load
    */
   public function testLoadMethodReturnsFalseIfNoDataInStorage() {
     $session = $this->setUpDefaultSession();

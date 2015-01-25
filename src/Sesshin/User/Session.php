@@ -10,7 +10,7 @@ namespace Sesshin\User;
  * with this source code in the file LICENSE.
  */
 
-class Session extends \Sesshin\Session\Session {
+class Session extends \Sesshin\Session {
 
   private $user_id_key = '_user_id';
 
