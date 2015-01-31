@@ -309,7 +309,7 @@ class SessionTest extends TestCase
         $session->expects($this->any())->method('isOpened')->will($this->returnValue(false));
         $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(true));
         $session->expects($this->once())->method('getFirstTrace')->will($this->returnValue(false));
-        $session->getEventEmitter()->expects($this->once())->method('emit')->with($this->equalTo(new Event(Event::NO_DATA_OR_EXPIRED, $session)));
+        $session->getEventEmitter()->expects($this->once())->method('emit')->with($this->equalTo(new Event\NoDataOrExpired($session)));
 
         $session->open();
     }
@@ -324,7 +324,7 @@ class SessionTest extends TestCase
         $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(true));
         $session->expects($this->once())->method('getFirstTrace')->will($this->returnValue(time()));
         $session->expects($this->once())->method('isExpired')->will($this->returnValue(true));
-        $session->getEventEmitter()->expects($this->once())->method('emit')->with($this->equalTo(new Event(Event::EXPIRED, $session)));
+        $session->getEventEmitter()->expects($this->once())->method('emit')->with($this->equalTo(new Event\Expired($session)));
 
         $session->open();
     }
@@ -344,7 +344,7 @@ class SessionTest extends TestCase
         $session->expects($this->once())->method('isExpired')->will($this->returnValue(false));
         $session->expects($this->once())->method('getFingerprint')->will($this->returnValue('abc'));
         $session->expects($this->once())->method('generateFingerprint')->will($this->returnValue('def'));
-        $session->getEventEmitter()->expects($this->once())->method('emit')->with($this->equalTo(new Event(Event::INVALID_FINGERPRINT, $session)));
+        $session->getEventEmitter()->expects($this->once())->method('emit')->with($this->equalTo(new Event\InvalidFingerprint($session)));
 
         $session->open();
     }

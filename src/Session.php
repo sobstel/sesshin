@@ -110,11 +110,11 @@ class Session implements \ArrayAccess
                 $this->load();
 
                 if (!$this->getFirstTrace()) {
-                    $this->getEventEmitter()->emit(new Event(Event::NO_DATA_OR_EXPIRED, $this));
+                    $this->getEventEmitter()->emit(new Event\NoDataOrExpired($this));
                 } elseif ($this->isExpired()) {
-                    $this->getEventEmitter()->emit(new Event(Event::EXPIRED, $this));
+                    $this->getEventEmitter()->emit(new Event\Expired($this));
                 } elseif ($this->generateFingerprint() != $this->getFingerprint()) {
-                    $this->getEventEmitter()->emit(new Event(Event::INVALID_FINGERPRINT, $this));
+                    $this->getEventEmitter()->emit(new Event\InvalidFingerprint($this));
                 } else {
                     $this->opened = true;
                     $this->requests_counter += 1;
