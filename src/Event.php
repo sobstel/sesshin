@@ -22,6 +22,9 @@ class Event extends BaseEvent
         parent::__construct($name);
     }
 
+    /**
+     * @return Session
+     */
     public function getSession()
     {
         return $this->session;
