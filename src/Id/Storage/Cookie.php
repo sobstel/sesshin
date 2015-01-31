@@ -1,5 +1,5 @@
 <?php
-namespace Sesshin\Id\Storage;
+namespace League\Sesshin\Id\Storage;
 
 class Cookie implements StorageInterface
 {
@@ -31,7 +31,7 @@ class Cookie implements StorageInterface
     }
 
     /**
-     * @param string $id
+     * {@inheritdoc}
      */
     public function setId($id)
     {
@@ -40,6 +40,9 @@ class Cookie implements StorageInterface
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getId()
     {
         if ($this->issetId()) {
@@ -47,11 +50,17 @@ class Cookie implements StorageInterface
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function issetId()
     {
         return (isset($this->id) || isset($_COOKIE[$this->name]));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function unsetId()
     {
         setcookie($this->name, '', 1, $this->path, $this->domain, $this->secure, $this->http_only);

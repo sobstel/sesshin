@@ -1,16 +1,7 @@
 <?php
-/*
- * This file is part of Sesshin library.
- *
- * (c) Przemek Sobstel <http://sobstel.org>
- *
- * This source file is subject to the MIT license that is bundled
- * with this source code in the file LICENSE.
- */
+namespace League\Sesshin\EntropyGenerator;
 
-namespace Sesshin\EntropyGenerator;
-
-use Sesshin\Exception;
+use League\Sesshin\Exception;
 
 class File implements EntropyGeneratorInterface
 {
@@ -23,6 +14,9 @@ class File implements EntropyGeneratorInterface
         $this->length = $length;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function generate()
     {
         $entropy = file_get_contents($this->file, false, null, 0, $this->length);

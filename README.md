@@ -1,4 +1,4 @@
-3# Sesshin
+# Sesshin
 
 Object-oriented, extendable advanced session handling component written with
 security in mind that mitigates attacks like Session Hijacking, Session Fixation,

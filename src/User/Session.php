@@ -1,7 +1,9 @@
 <?php
-namespace Sesshin\User;
+namespace League\Sesshin\User;
 
-class Session extends \Sesshin\Session
+use League\Sesshin\Session as BaseSession;
+
+class Session extends BaseSession
 {
     private $user_id_key = '_user_id';
 

@@ -1,5 +1,5 @@
 {
-    "name": "sobstel/sesshin",
+    "name": "league/sesshin",
     "description": "PHP secure advanced session manager",
     "keywords": ["session"],
     "type": "library",
@@ -15,9 +15,9 @@
         "email": "przemek@sobstel.org"
     },
     "autoload": {
-        "psr-0": {
-            "Sesshin\\Tests": "tests/",
-            "Sesshin": "src/"
+        "psr-4": {
+            "League\\Sesshin\\Tests\\": "tests/",
+            "League\\Sesshin\\": "src/"
         }
     },
     "require": {

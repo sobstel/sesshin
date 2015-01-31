@@ -1,11 +1,13 @@
 <?php
-namespace Sesshin\Id;
+namespace League\Sesshin\Id;
 
-use Sesshin\EntropyGenerator;
+use Sesshin\League\EntropyGenerator;
 
+/**
+ * Session id handler (storage, entropy generator, hash algo...).
+ */
 class Handler
 {
-
     /** @var \Sesshin\Id\Storage\StorageInterface */
     private $id_storage;
 

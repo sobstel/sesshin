@@ -1,7 +1,7 @@
 <?php
-namespace Sesshin\Tests\EntropyGenerator;
+namespace League\Sesshin\Tests\EntropyGenerator;
 
-use Sesshin\EntropyGenerator\File;
+use League\Sesshin\EntropyGenerator\File;
 
 class FileTest extends \PHPUnit_Framework_TestCase
 {
@@ -27,7 +27,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Sesshin\Exception
+     * @expectedException \League\Sesshin\Exception
      */
     public function testThrowsExceptionOnEmptyFile()
     {

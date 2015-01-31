@@ -1,14 +1,18 @@
 <?php
-namespace Sesshin\Id\Storage;
+namespace League\Sesshin\Id\Storage;
 
 interface StorageInterface
 {
     /**
-     * @param int $id
+     * Set (store) session id in storage.
+     *
+     * @param string $id
      */
     public function setId($id);
 
     /**
+     * Get session id from storage.
+     *
      * @return string
      */
     public function getId();

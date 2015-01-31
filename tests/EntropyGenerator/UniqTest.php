@@ -1,7 +1,7 @@
 <?php
-namespace Sesshin\Tests\EntropyGenerator;
+namespace League\Sesshin\Tests\EntropyGenerator;
 
-use Sesshin\EntropyGenerator\Uniq;
+use League\Sesshin\EntropyGenerator\Uniq;
 
 class UniqTest extends \PHPUnit_Framework_TestCase
 {

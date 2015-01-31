@@ -1,5 +1,5 @@
 <?php
-namespace Sesshin;
+namespace League\Sesshin;
 
 use League\Event\Emitter as EventEmitter;
 
@@ -8,49 +8,49 @@ class Session implements \ArrayAccess
     const DEFAULT_NAMESPACE = 'default';
     const METADATA_NAMESPACE = '__metadata__';
 
-    /** @var \Sesshin\Id\Handler */
+    /*** @var \League\Sesshin\Id\Handler */
     private $id_handler;
 
-    /** @var int Number of requests after which id is regeneratd */
+    /*** @var int Number of requests after which id is regeneratd */
     private $id_requests_limit = null;
 
-    /** @var int Time after id is regenerated */
+    /*** @var int Time after id is regenerated */
     private $id_ttl = 1440;
 
-    /** @var bool */
+    /*** @var bool */
     private $id_regenerated;
 
-    /** @var int */
+    /*** @var int */
     private $regeneration_trace;
 
-    /** @var \Sesshin\Storage\StorageInterface */
+    /*** @var \League\Sesshin\Storage\StorageInterface */
     private $storage;
 
-    /** @var EventEmitter */
+    /*** @var EventEmitter */
     private $eventEmitter;
 
-    /** @var array Session values */
+    /*** @var array Session values */
     private $values = array();
 
-    /** @var int Specifies the number of seconds after which session will be automatically expired */
+    /*** @var int Specifies the number of seconds after which session will be automatically expired */
     private $ttl = 1440;
 
-    /** @var int First trace (timestamp), time when session was created */
+    /*** @var int First trace (timestamp), time when session was created */
     private $first_trace;
 
-    /** @var int Last trace (Unix timestamp) */
+    /*** @var int Last trace (Unix timestamp) */
     private $last_trace;
 
-    /** @var int */
+    /*** @var int */
     private $requests_counter;
 
-    /** @var array of \Sesshin\FingerprintGenerator\FingerprintGeneratorInterface */
+    /*** @var array of \Sesshin\FingerprintGenerator\FingerprintGeneratorInterface */
     private $fingerprint_generators = array();
 
-    /** @var string */
+    /*** @var string */
     private $fingerprint = '';
 
-    /** @var bool Is session opened? */
+    /*** @var bool Is session opened? */
     private $opened = false;
 
     /**
@@ -58,7 +58,7 @@ class Session implements \ArrayAccess
      */
     public function __construct()
     {
-        // registering pseudo-destructor, just in case someone forgets to close
+        // registering shutdown function, just in case someone forgets to close session
         register_shutdown_function(array($this, 'close'));
     }
 
@@ -128,6 +128,8 @@ class Session implements \ArrayAccess
     }
 
     /**
+     * Is session opened?
+     *
      * @return bool
      */
     public function isOpened()
@@ -145,13 +147,18 @@ class Session implements \ArrayAccess
         return $this->isOpened();
     }
 
+    /**
+     * Is session expired?
+     *
+     * @return bool
+     */
     public function isExpired()
     {
         return ($this->getLastTrace() + $this->getTtl() < time());
     }
 
     /**
-     * Close the session (for a given request).
+     * Close the session.
      */
     public function close()
     {
@@ -178,6 +185,11 @@ class Session implements \ArrayAccess
         $this->getIdHandler()->unsetId();
     }
 
+    /**
+     * Get session identifier
+     *
+     * @return string
+     */
     public function getId()
     {
         return $this->getIdHandler()->getId();
@@ -232,6 +244,9 @@ class Session implements \ArrayAccess
         $this->id_ttl = $ttl;
     }
 
+    /**
+     * Determine if session id should be regenerated? (based on request_counter or regeneration_trace)
+     */
     protected function shouldRegenerateId()
     {
         if (($this->id_requests_limit) && ($this->requests_counter >= $this->id_requests_limit)) {
@@ -443,7 +458,7 @@ class Session implements \ArrayAccess
     }
 
     /**
-     * Loads session data from cache.
+     * Loads session data from defined storage.
      *
      * @return bool
      */
@@ -470,7 +485,7 @@ class Session implements \ArrayAccess
     }
 
     /**
-     * Saves session data into cache.
+     * Saves session data into defined storage.
      *
      * @return bool
      */

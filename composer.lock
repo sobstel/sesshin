@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "3bf12207b38f4f756d0c693e03a53e0a",
+    "hash": "ba89ec18b2b2a641eb4ef130ef8b3e6e",
     "packages": [
         {
             "name": "league/event",
@@ -61,7 +61,7 @@
     "minimum-stability": "dev",
     "stability-flags": [],
     "platform": {
-        "php": ">=5.3.3"
+        "php": ">=5.4.0"
     },
     "platform-dev": []
 }

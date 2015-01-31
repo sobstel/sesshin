@@ -1,5 +1,5 @@
 <?php
-namespace Sesshin\Storage;
+namespace League\Sesshin\Storage;
 
 class Memcache extends Storage
 {

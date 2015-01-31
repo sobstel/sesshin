@@ -1,5 +1,5 @@
 <?php
-namespace Sesshin;
+namespace League\Sesshin;
 
 use League\Event\Event as BaseEvent;
 

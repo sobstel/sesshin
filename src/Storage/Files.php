@@ -1,5 +1,5 @@
 <?php
-namespace Sesshin\Storage;
+namespace League\Sesshin\Storage;
 
 use DirectoryIterator;
 
