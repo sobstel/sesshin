@@ -1,7 +1,10 @@
 <?php
 namespace League\Sesshin;
 
+use League\Event\EmitterInterface;
 use League\Event\Emitter as EventEmitter;
+use Doctrine\Common\Cache\Cache as StoreInterface;
+use Doctrine\Common\Cache\FilesystemCache as FilesystemStore;
 
 class Session implements \ArrayAccess
 {
@@ -23,10 +26,10 @@ class Session implements \ArrayAccess
     /*** @var int */
     private $regeneration_trace;
 
-    /*** @var \League\Sesshin\Storage\StorageInterface */
-    private $storage;
+    /*** @var Store */
+    private $store;
 
-    /*** @var EventEmitter */
+    /*** @var EmitterInterface */
     private $eventEmitter;
 
     /*** @var array Session values */
@@ -181,7 +184,7 @@ class Session implements \ArrayAccess
     public function destroy()
     {
         $this->values = array();
-        $this->getStorage()->delete($this->getId());
+        $this->getStore()->delete($this->getId());
         $this->getIdHandler()->unsetId();
     }
 
@@ -198,7 +201,7 @@ class Session implements \ArrayAccess
     /**
      * Regenerates session id.
      *
-     * Destroys current session in storage and generates new id, which will be saved
+     * Destroys current session in store and generates new id, which will be saved
      * at the end of script execution (together with values).
      *
      * Id is regenerated at the most once per script execution (even if called a few times).
@@ -208,7 +211,7 @@ class Session implements \ArrayAccess
     public function regenerateId()
     {
         if (!$this->id_regenerated) {
-            $this->getStorage()->delete($this->getId());
+            $this->getStore()->delete($this->getId());
             $this->getIdHandler()->generateId();
 
             $this->regeneration_trace = time();
@@ -260,32 +263,35 @@ class Session implements \ArrayAccess
         return false;
     }
 
-    public function setStorage(Storage\StorageInterface $storage)
+    public function setStore(StoreInterface $store)
     {
-        $this->storage = $storage;
+        $this->store = $store;
     }
 
-    public function getStorage()
+    /**
+     * @return StoreInterface
+     */
+    public function getStore()
     {
-        if (!$this->storage) {
-            $this->storage = new Storage\Files();
+        if (!$this->store) {
+            $this->store = new FilesystemStore('/tmp', '.sesshin'); // default
         }
 
-        return $this->storage;
+        return $this->store;
     }
 
-    public function setEventEmitter(EventEmitter $eventEmitter)
+    public function setEventEmitter(EmitterInterface $eventEmitter)
     {
         $this->eventEmitter = $eventEmitter;
     }
 
     /**
-     * @return EventEmitter
+     * @return EmitterInterface
      */
     public function getEventEmitter()
     {
         if (!$this->eventEmitter) {
-            $this->eventEmitter = new EventEmitter();
+            $this->eventEmitter = new EventEmitter(); // default
         }
 
         return $this->eventEmitter;
@@ -364,7 +370,6 @@ class Session implements \ArrayAccess
     }
 
     /**
-     *
      * It must be called before {@link self::open()}.
      *
      * @param int $ttl
@@ -376,7 +381,6 @@ class Session implements \ArrayAccess
         }
 
         $this->ttl = $ttl;
-        $this->getStorage()->setDefaultTtl($ttl);
     }
 
     /**
@@ -395,16 +399,37 @@ class Session implements \ArrayAccess
         return $this->requests_counter;
     }
 
+    /**
+     * Sets session value in given or default namespace
+     *
+     * @param string $name
+     * @param mixed $value
+     * @param string $namespace
+     */
     public function setValue($name, $value, $namespace = self::DEFAULT_NAMESPACE)
     {
         $this->values[$namespace][$name] = $value;
     }
 
+    /**
+     * Gets session value from given or default namespace
+     *
+     * @param string $name
+     * @param string $namespace
+     * @return mixed
+     */
     public function getValue($name, $namespace = self::DEFAULT_NAMESPACE)
     {
         return isset($this->values[$namespace][$name]) ? $this->values[$namespace][$name] : null;
     }
 
+    /**
+     * Gets and unsets value (flash value) for given or default namespace
+     *
+     * @param string $name
+     * @param string $namespace
+     * @return mixed
+     */
     public function getUnsetValue($name, $namespace = self::DEFAULT_NAMESPACE)
     {
         $value = $this->getValue($name, $namespace);
@@ -413,6 +438,12 @@ class Session implements \ArrayAccess
         return $value;
     }
 
+    /**
+     * Get all values for given or default namespace
+     *
+     * @param string $namespace
+     * @return array
+     */
     public function getValues($namespace = self::DEFAULT_NAMESPACE)
     {
         return (isset($this->values[$namespace]) ? $this->values[$namespace] : array());
@@ -458,13 +489,13 @@ class Session implements \ArrayAccess
     }
 
     /**
-     * Loads session data from defined storage.
+     * Loads session data from defined store.
      *
      * @return bool
      */
     protected function load()
     {
-        $values = $this->getStorage()->fetch($this->getId());
+        $values = $this->getStore()->fetch($this->getId());
 
         if ($values === false) {
             return false;
@@ -485,7 +516,7 @@ class Session implements \ArrayAccess
     }
 
     /**
-     * Saves session data into defined storage.
+     * Saves session data into defined store.
      *
      * @return bool
      */
@@ -501,6 +532,6 @@ class Session implements \ArrayAccess
           'fingerprint' => $this->getFingerprint(),
         ];
 
-        return $this->getStorage()->store($this->getId(), $values);
+        return $this->getStore()->save($this->getId(), $values, $this->ttl);
     }
 }

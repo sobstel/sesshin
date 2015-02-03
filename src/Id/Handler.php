@@ -4,12 +4,12 @@ namespace League\Sesshin\Id;
 use Sesshin\League\EntropyGenerator;
 
 /**
- * Session id handler (storage, entropy generator, hash algo...).
+ * Session id handler (store, entropy generator, hash algo...).
  */
 class Handler
 {
-    /** @var \Sesshin\Id\Storage\StorageInterface */
-    private $id_storage;
+    /** @var \Sesshin\Id\Store\StoreInterface */
+    private $id_store;
 
     /** @var \Sesshin\EntropyGenerator\EntropyGeneratorInterface */
     private $entropy_generator;
@@ -18,23 +18,23 @@ class Handler
     private $hash_algo = 'sha1';
 
     /**
-     * @param \Sesshin\Id\Storage\StorageInterface $id_storage
+     * @param \Sesshin\Id\Store\StoreInterface $id_store
      */
-    public function setIdStorage(Storage\StorageInterface $id_storage)
+    public function setIdStore(Store\StoreInterface $id_store)
     {
-        $this->id_storage = $id_storage;
+        $this->id_store = $id_store;
     }
 
     /**
-     * @return Storage\StorageInterface
+     * @return Store\StoreInterface
      */
-    public function getIdStorage()
+    public function getIdStore()
     {
-        if (!$this->id_storage) {
-            $this->id_storage = new Storage\Cookie();
+        if (!$this->id_store) {
+            $this->id_store = new Store\Cookie();
         }
 
-        return $this->id_storage;
+        return $this->id_store;
     }
 
     /**
@@ -92,21 +92,21 @@ class Handler
 
     public function setId($id)
     {
-        $this->getIdStorage()->setId($id);
+        $this->getIdStore()->setId($id);
     }
 
     public function getId()
     {
-        return $this->getIdStorage()->getId();
+        return $this->getIdStore()->getId();
     }
 
     public function issetId()
     {
-        return $this->getIdStorage()->issetId();
+        return $this->getIdStore()->issetId();
     }
 
     public function unsetId()
     {
-        return $this->getIdStorage()->unsetId();
+        return $this->getIdStore()->unsetId();
     }
 }

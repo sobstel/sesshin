@@ -1,7 +1,7 @@
 <?php
-namespace League\Sesshin\Id\Storage;
+namespace League\Sesshin\Id\Store;
 
-class Cookie implements StorageInterface
+class Cookie implements StoreInterface
 {
     /** @var string */
     private $id;

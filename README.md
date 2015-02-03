@@ -15,15 +15,15 @@ Features:
 * sends cookie only when session really created
 * session id rotation (anti session hijacking), based on time and/or number of
   requests
-* support for user-defined storage
+* support for user-defined stores
 * support for user-defined listeners (observers)
 * support for user-defined entropy callback
 * support for own fingerprint generators, e.g. user agent,
 * unlike PHP native mechanism, you don't have to use cron or resourse-consuming
   100% garbage collecting probability to ensure sessions are removed exactly
   after specified time
-* convention over configuration (has defined default listener, storage, entropy
-  generator, fingerprint generator and ID storage)
+* convention over configuration (has defined default listener, store, entropy
+  generator, fingerprint generator and ID store)
 * 100% independent from insecure native PHP session extension
 * and some more...
 
@@ -107,12 +107,22 @@ if ($user_session->isLogged()) {
 }
 ```
 
-### Change storage
+### Change store
+
+Sesshin is using `doctrine\cache' as a store. Filesystem store
+is used by default, but you should define it yourself (as it uses
+/tmp directory by default, which is not secure on shared hosting).
 
 ```php
-use Sesshin\Storage\Memcache;
+use Doctrine\Common\Cache\MemcachedCache as MemcachedStore;
 
-$session->setStorage(new Memcache($memcache_driver));
+$session->setStore(new MemcachedStore($memcache_driver));
+```
+
+```php
+use Doctrine\Common\Cache\FilesystemCache as FilesystemStore;
+
+$session->setStore(new FilesystemStore('/secure/path', '.sess'));
 ```
 
 ### Change entropy algorithm
@@ -125,13 +135,13 @@ $session->getIdHandler()->setEntropyGenerator(new MyFancyEntropyGenerator());
 
 `MyFancyEntropyGenerator` must implement `Sesshin\EntropyGenerator\EntropyGeneratorInterface`.
 
-### Change session ID storage
+### Change session ID store
 
 By default session ID is stored in cookie, but sometimes you may need to force
 session id, eg. based on some token, query string var, etc.
 
 ```php
-$session->getIdHandler()->setIdStorage(new MyFancyIdStorage());
+$session->getIdHandler()->setIdStore(new MyFancyIdStore());
 ```
 
-`MyFancyIdStorage` must implement `Sesshin\Id\Storage\StorageInterface`.
+`MyFancyIdStore` must implement `Sesshin\Id\Store\StoreInterface`.

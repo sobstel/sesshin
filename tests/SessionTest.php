@@ -18,8 +18,8 @@ class SessionTest extends TestCase
         $id_handler = $this->getMock('\League\Sesshin\Id\Handler', array('generateId', 'getId', 'setId', 'issetId', 'unsetId'));
         $session->setIdHandler($id_handler);
 
-        $storage = $this->getMock('\League\Sesshin\Storage\StorageInterface', array('store', 'fetch', 'delete'));
-        $session->setStorage($storage);
+        $store = $this->getMock('\Doctrine\Common\Cache\Cache', array('save', 'fetch', 'delete', 'contains', 'getStats'));
+        $session->setStore($store);
 
         $eventEmitter = $this->getMock('\League\Event\Emitter', array('emit', 'addListener'));
         $session->setEventEmitter($eventEmitter);
@@ -452,24 +452,24 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::setStorage
-     * @covers League\Sesshin\Session::getStorage
+     * @covers League\Sesshin\Session::setStore
+     * @covers League\Sesshin\Session::getStore
      */
-    public function testCanSetGetStorage()
+    public function testCanSetGetStore()
     {
         $session = new Session();
-        $storage = new \League\Sesshin\Storage\Files();
-        $session->setStorage($storage);
-        $this->assertSame($storage, $session->getStorage());
+        $store = new \Doctrine\Common\Cache\FilesystemCache('/tmp', '.ext');
+        $session->setStore($store);
+        $this->assertSame($store, $session->getStore());
     }
 
     /**
-     * @covers League\Sesshin\Session::getStorage
+     * @covers League\Sesshin\Session::getStore
      */
-    public function testUsesFilesStorageIfNotSet()
+    public function testUsesFilesystemStoreIfNotSet()
     {
         $session = new Session();
-        $this->assertEquals('League\Sesshin\Storage\Files', get_class($session->getStorage()));
+        $this->assertEquals('Doctrine\Common\Cache\FilesystemCache', get_class($session->getStore()));
     }
 
     /**
@@ -522,20 +522,20 @@ class SessionTest extends TestCase
      * @covers League\Sesshin\Session::load
      * @depends testOpenMethodLoadsSessionDataIfSessionExists
      */
-    public function testLoadMethodFetchesDataFromStorage()
+    public function testLoadMethodFetchesDataFromStore()
     {
         $session = $this->setUpDefaultSession();
-        $session->getStorage()->expects($this->any())->method('fetch')->with($this->equalTo($session->getId()));
+        $session->getStore()->expects($this->any())->method('fetch')->with($this->equalTo($session->getId()));
         $this->invokeMethod($session, 'load');
     }
 
     /**
      * @covers League\Sesshin\Session::load
      */
-    public function testLoadMethodReturnsFalseIfNoDataInStorage()
+    public function testLoadMethodReturnsFalseIfNoDataInStore()
     {
         $session = $this->setUpDefaultSession();
-        $session->getStorage()->expects($this->any())->method('fetch')->will($this->returnValue(false));
+        $session->getStore()->expects($this->any())->method('fetch')->will($this->returnValue(false));
         $this->assertFalse($this->invokeMethod($session, 'load'));
     }
 }
