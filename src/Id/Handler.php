@@ -2,13 +2,15 @@
 namespace League\Sesshin\Id;
 
 use Sesshin\League\EntropyGenerator;
+use Sesshin\Id\Store\StoreInterface;
+use Sesshin\Id\Store\Cookie as CookieStore;
 
 /**
  * Session id handler (store, entropy generator, hash algo...).
  */
 class Handler
 {
-    /** @var \Sesshin\Id\Store\StoreInterface */
+    /** @var StoreInterface */
     private $id_store;
 
     /** @var \Sesshin\EntropyGenerator\EntropyGeneratorInterface */
@@ -18,20 +20,20 @@ class Handler
     private $hash_algo = 'sha1';
 
     /**
-     * @param \Sesshin\Id\Store\StoreInterface $id_store
+     * @param StoreInterface $id_store
      */
-    public function setIdStore(Store\StoreInterface $id_store)
+    public function setIdStore(StoreInterface $id_store)
     {
         $this->id_store = $id_store;
     }
 
     /**
-     * @return Store\StoreInterface
+     * @return StoreInterfaceStoreInterface
      */
     public function getIdStore()
     {
         if (!$this->id_store) {
-            $this->id_store = new Store\Cookie();
+            $this->id_store = new CookieStore();
         }
 
         return $this->id_store;
