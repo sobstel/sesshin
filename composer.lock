@@ -1,9 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
     ],
-    "hash": "8a6c53c839e2f47f631622aa80ed1b54",
+    "hash": "e86ac4d3bb3756b894b4570a2929b6bd",
     "packages": [
         {
             "name": "doctrine/cache",
@@ -77,23 +78,23 @@
         },
         {
             "name": "league/event",
-            "version": "2.0.0",
+            "version": "2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/event.git",
-                "reference": "544d28868913c13c4b45d6d1a0835987033e3b72"
+                "reference": "14b65eeb88d0583c9995473ff803c0634673740c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/event/zipball/544d28868913c13c4b45d6d1a0835987033e3b72",
-                "reference": "544d28868913c13c4b45d6d1a0835987033e3b72",
+                "url": "https://api.github.com/repos/thephpleague/event/zipball/14b65eeb88d0583c9995473ff803c0634673740c",
+                "reference": "14b65eeb88d0583c9995473ff803c0634673740c",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.4.0"
             },
             "require-dev": {
-                "henrikbjorn/phpspec-code-coverage": "1.0.*@dev",
+                "henrikbjorn/phpspec-code-coverage": "~1.0.1",
                 "phpspec/phpspec": "~2.0.0"
             },
             "type": "library",
@@ -123,13 +124,14 @@
                 "event",
                 "listener"
             ],
-            "time": "2014-12-09 21:02:05"
+            "time": "2015-02-12 21:08:11"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": [],
+    "prefer-stable": false,
     "platform": {
         "php": ">=5.4.0"
     },
