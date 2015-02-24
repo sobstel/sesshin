@@ -22,8 +22,8 @@
     },
     "require": {
         "php": ">=5.4.0",
-        "league/event": "2.0.*",
-        "doctrine/cache": "1.4.*"
+        "league/event": "~2.0",
+        "doctrine/cache": "~1.4"
     },
     "extra": {
         "branch-alias": {

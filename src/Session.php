@@ -3,8 +3,9 @@ namespace League\Sesshin;
 
 use League\Event\EmitterInterface;
 use League\Event\Emitter as EventEmitter;
-use Doctrine\Common\Cache\Cache as StoreInterface;
-use Doctrine\Common\Cache\FilesystemCache as FilesystemStore;
+use League\Sesshin\Store\StoreInterface;
+use League\Sesshin\Store\DoctrineCache;
+use Doctrine\Common\Cache\FilesystemCache;
 
 class Session implements \ArrayAccess
 {
@@ -274,7 +275,7 @@ class Session implements \ArrayAccess
     public function getStore()
     {
         if (!$this->store) {
-            $this->store = new FilesystemStore('/tmp', '.sesshin'); // default
+            $this->store = new DoctrineCache(new FilesystemCache('/tmp', '.sesshin')); // default
         }
 
         return $this->store;

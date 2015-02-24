@@ -114,16 +114,17 @@ is used by default, but you should define it yourself (as it uses
 /tmp directory by default, which is not secure on shared hosting).
 
 ```php
-use Doctrine\Common\Cache\MemcachedCache as MemcachedStore;
+use League\Sesshin\Store\DoctrineCache;
+use Doctrine\Common\Cache\MemcachedCache;
 
-$session->setStore(new MemcachedStore($memcache_driver));
+$memcached = new Memcached;
+// configure servers here
+
+$session->setStore(new DoctrineCache(new MemcachedCache($memcached)));
 ```
 
-```php
-use Doctrine\Common\Cache\FilesystemCache as FilesystemStore;
-
-$session->setStore(new FilesystemStore('/secure/path', '.sess'));
-```
+You can use any [doctrine/cache provider](https://github.com/doctrine/cache/tree/master/lib/Doctrine/Common/Cache)
+or implemnt your own using `League\Sesshin\Store\StoreInterface`.
 
 ### Change entropy algorithm
 

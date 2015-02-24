@@ -18,7 +18,7 @@ class SessionTest extends TestCase
         $id_handler = $this->getMock('\League\Sesshin\Id\Handler', array('generateId', 'getId', 'setId', 'issetId', 'unsetId'));
         $session->setIdHandler($id_handler);
 
-        $store = $this->getMock('\Doctrine\Common\Cache\Cache', array('save', 'fetch', 'delete', 'contains', 'getStats'));
+        $store = $this->getMock('\League\Sesshin\Store\StoreInterface', array('save', 'fetch', 'delete'));
         $session->setStore($store);
 
         $eventEmitter = $this->getMock('\League\Event\Emitter', array('emit', 'addListener'));
@@ -458,7 +458,7 @@ class SessionTest extends TestCase
     public function testCanSetGetStore()
     {
         $session = new Session();
-        $store = new \Doctrine\Common\Cache\FilesystemCache('/tmp', '.ext');
+        $store = new \League\Sesshin\Store\DoctrineCache(new \Doctrine\Common\Cache\FilesystemCache('/tmp', '.ext'));
         $session->setStore($store);
         $this->assertSame($store, $session->getStore());
     }
@@ -466,10 +466,11 @@ class SessionTest extends TestCase
     /**
      * @covers League\Sesshin\Session::getStore
      */
-    public function testUsesFilesystemStoreIfNotSet()
+    public function testUsesDoctrineFilesystemCacheByDefault()
     {
         $session = new Session();
-        $this->assertEquals('Doctrine\Common\Cache\FilesystemCache', get_class($session->getStore()));
+        $this->assertEquals('League\Sesshin\Store\DoctrineCache', get_class($session->getStore()));
+        $this->assertEquals('Doctrine\Common\Cache\FilesystemCache', get_class($session->getStore()->getCache()));
     }
 
     /**
