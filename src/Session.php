@@ -4,7 +4,6 @@ namespace League\Sesshin;
 use League\Event\EmitterInterface;
 use League\Event\Emitter as EventEmitter;
 use League\Sesshin\Store\StoreInterface;
-use League\Sesshin\Store\FileStore;
 
 class Session implements \ArrayAccess
 {
