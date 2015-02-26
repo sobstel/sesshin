@@ -26,7 +26,7 @@
     },
     "suggest": {
         "doctrine/cache": "To use one of numerous doctrine cache drivers for storing"
-    }
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "1.0.x-dev"
