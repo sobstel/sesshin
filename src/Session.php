@@ -4,8 +4,7 @@ namespace League\Sesshin;
 use League\Event\EmitterInterface;
 use League\Event\Emitter as EventEmitter;
 use League\Sesshin\Store\StoreInterface;
-use League\Sesshin\Store\DoctrineCache;
-use Doctrine\Common\Cache\FilesystemCache;
+use League\Sesshin\Store\FileStore;
 
 class Session implements \ArrayAccess
 {
@@ -60,8 +59,10 @@ class Session implements \ArrayAccess
     /**
      * Constructor
      */
-    public function __construct()
+    public function __construct(StoreInterface $store)
     {
+        $this->store = $store;
+
         // registering shutdown function, just in case someone forgets to close session
         register_shutdown_function(array($this, 'close'));
     }
@@ -264,20 +265,11 @@ class Session implements \ArrayAccess
         return false;
     }
 
-    public function setStore(StoreInterface $store)
-    {
-        $this->store = $store;
-    }
-
     /**
      * @return StoreInterface
      */
-    public function getStore()
+    protected function getStore()
     {
-        if (!$this->store) {
-            $this->store = new DoctrineCache(new FilesystemCache('/tmp', '.sesshin')); // default
-        }
-
         return $this->store;
     }
 
@@ -374,7 +366,11 @@ class Session implements \ArrayAccess
             throw new Exception('Session is already opened, ttl cannot be set');
         }
 
-        $this->ttl = $ttl;
+        if ($ttl < 1) {
+            throw new Exception('$ttl must be greather than 0');
+        }
+
+        $this->ttl = (int)$ttl;
     }
 
     /**

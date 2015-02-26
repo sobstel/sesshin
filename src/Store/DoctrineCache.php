@@ -27,7 +27,7 @@ class DoctrineCache implements StoreInterface
     /**
      * {@inheritdoc}
      */
-    public function save($id, $data, $lifeTime = 0)
+    public function save($id, $data, $lifeTime)
     {
         return $this->cache->save($id, $data, $lifeTime);
     }

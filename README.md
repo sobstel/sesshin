@@ -95,36 +95,47 @@ $eventEmitter->addListener(Event::INVALID_FINGERPRINT, function(Event $event) {
 
 ```php
 use Sesshin\Session\User;
+use League\Sesshin\Store\FileStore;
 
-$user_session = new User();
+$userSession = new User(new FileStore('/path/to/dir'));
 
-$user_session->create();
-$user_session->login(1);
+$userSession->create();
+$userSession->login(123);
 
-if ($user_session->isLogged()) {
-  $user = UserRepository::find($user_session->getUserId());
+if ($userSession->isLogged()) {
+  $user = UserRepository::find($userSession->getUserId());
   echo sprintf('User %s is logged', $user->getUsername());
 }
 ```
 
-### Change store
+### Store
 
-Sesshin is using `doctrine\cache' as a store. Filesystem store
-is used by default, but you should define it yourself (as it uses
-/tmp directory by default, which is not secure on shared hosting).
+Sesshin provides default FileStore.
+
+```php
+use League\Sesshin\Session;
+use League\Sesshin\Store\FileStore;
+
+$session = new Session(new FileStore('/path/to/dir'));
+```
+
+Note! Using /tmp as a directory is not secure on shared hosting.
+
+Alternatively you can use one of numerous
+[doctrine/cache](https://github.com/doctrine/cache/tree/master/lib/Doctrine/Common/Cache)
+providers.
 
 ```php
 use League\Sesshin\Store\DoctrineCache;
 use Doctrine\Common\Cache\MemcachedCache;
 
 $memcached = new Memcached;
-// configure servers here
+// here configure memcached (add servers etc)
 
-$session->setStore(new DoctrineCache(new MemcachedCache($memcached)));
+$session = new Session(new DoctrineCache(new MemcachedCache($memcached)));
 ```
 
-You can use any [doctrine/cache provider](https://github.com/doctrine/cache/tree/master/lib/Doctrine/Common/Cache)
-or implemnt your own using `League\Sesshin\Store\StoreInterface`.
+You can also implement your own store using `League\Sesshin\Store\StoreInterface`.
 
 ### Change entropy algorithm
 

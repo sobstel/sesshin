@@ -12,9 +12,9 @@ interface StoreInterface
     /**
      * @param string $id
      * @param mixed  $data
-     * @param int $lifeTime Lifetime (0 => infinite lifeTime).
+     * @param int $lifeTime
      */
-    public function save($id, $data, $lifeTime = 0);
+    public function save($id, $data, $lifeTime);
 
     /**
      * @param string $id
