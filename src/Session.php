@@ -304,20 +304,13 @@ class Session implements \ArrayAccess
     }
 
     /**
-     * @return array
-     */
-    protected function getFingerprintGenerators()
-    {
-        return $this->fingerprint_generators;
-    }
-
-    /**
      * @return string
      */
     protected function generateFingerprint()
     {
         $fingerprint = '';
-        foreach ($this->getFingerprintGenerators() as $fingerprint_generator) {
+
+        foreach ($this->fingerprint_generators as $fingerprint_generator) {
             $fingerprint .= $fingerprint_generator->generate();
         }
 
