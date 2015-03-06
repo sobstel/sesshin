@@ -11,19 +11,19 @@ class Session implements \ArrayAccess
     const METADATA_NAMESPACE = '__metadata__';
 
     /*** @var \League\Sesshin\Id\Handler */
-    private $id_handler;
+    private $idHandler;
 
     /*** @var int Number of requests after which id is regeneratd */
-    private $id_requests_limit = null;
+    private $idRequestsLimit = null;
 
     /*** @var int Time after id is regenerated */
-    private $id_ttl = 1440;
+    private $idTtl = 1440;
 
     /*** @var bool */
-    private $id_regenerated;
+    private $idRegenerated;
 
     /*** @var int */
-    private $regeneration_trace;
+    private $regenerationTrace;
 
     /*** @var Store */
     private $store;
@@ -38,16 +38,16 @@ class Session implements \ArrayAccess
     private $ttl = 1440;
 
     /*** @var int First trace (timestamp), time when session was created */
-    private $first_trace;
+    private $firstTrace;
 
     /*** @var int Last trace (Unix timestamp) */
-    private $last_trace;
+    private $lastTrace;
 
     /*** @var int */
-    private $requests_counter;
+    private $requestsCount;
 
     /*** @var array of \Sesshin\FingerprintGenerator\FingerprintGeneratorInterface */
-    private $fingerprint_generators = array();
+    private $fingerprintGenerators = array();
 
     /*** @var string */
     private $fingerprint = '';
@@ -81,11 +81,11 @@ class Session implements \ArrayAccess
 
         $this->values = array();
 
-        $this->first_trace = time();
+        $this->firstTrace = time();
         $this->updateLastTrace();
 
-        $this->requests_counter = 1;
-        $this->regeneration_trace = time();
+        $this->requestsCount = 1;
+        $this->regenerationTrace = time();
 
         $this->fingerprint = $this->generateFingerprint();
 
@@ -107,7 +107,7 @@ class Session implements \ArrayAccess
      * @param bool Create new session if not exists earlier?
      * @return bool Session opened?
      */
-    public function open($create_new_if_not_exists = false)
+    public function open($createNewIfNotExists = false)
     {
         if (!$this->isOpened()) {
             if ($this->getIdHandler()->issetId()) {
@@ -121,9 +121,9 @@ class Session implements \ArrayAccess
                     $this->getEventEmitter()->emit(new Event\InvalidFingerprint($this));
                 } else {
                     $this->opened = true;
-                    $this->requests_counter += 1;
+                    $this->requestsCount += 1;
                 }
-            } elseif ($create_new_if_not_exists) {
+            } elseif ($createNewIfNotExists) {
                 $this->create();
             }
         }
@@ -211,12 +211,12 @@ class Session implements \ArrayAccess
      */
     public function regenerateId()
     {
-        if (!$this->id_regenerated) {
+        if (!$this->idRegenerated) {
             $this->getStore()->delete($this->getId());
             $this->getIdHandler()->generateId();
 
-            $this->regeneration_trace = time();
-            $this->id_regenerated = true;
+            $this->regenerationTrace = time();
+            $this->idRegenerated = true;
 
             return true;
         }
@@ -224,40 +224,40 @@ class Session implements \ArrayAccess
         return false;
     }
 
-    public function setIdHandler(Id\Handler $id_handler)
+    public function setIdHandler(Id\Handler $idHandler)
     {
-        $this->id_handler = $id_handler;
+        $this->idHandler = $idHandler;
     }
 
     public function getIdHandler()
     {
-        if (!$this->id_handler) {
-            $this->id_handler = new Id\Handler();
+        if (!$this->idHandler) {
+            $this->idHandler = new Id\Handler();
         }
 
-        return $this->id_handler;
+        return $this->idHandler;
     }
 
     public function setIdRequestsLimit($limit)
     {
-        $this->id_requests_limit = $limit;
+        $this->idRequestsLimit = $limit;
     }
 
     public function setIdTtl($ttl)
     {
-        $this->id_ttl = $ttl;
+        $this->idTtl = $ttl;
     }
 
     /**
-     * Determine if session id should be regenerated? (based on request_counter or regeneration_trace)
+     * Determine if session id should be regenerated? (based on request_counter or regenerationTrace)
      */
     protected function shouldRegenerateId()
     {
-        if (($this->id_requests_limit) && ($this->requests_counter >= $this->id_requests_limit)) {
+        if (($this->idRequestsLimit) && ($this->requestsCount >= $this->idRequestsLimit)) {
             return true;
         }
 
-        if (($this->id_ttl && $this->regeneration_trace) && ($this->regeneration_trace + $this->id_ttl < time())) {
+        if (($this->idTtl && $this->regenerationTrace) && ($this->regenerationTrace + $this->idTtl < time())) {
             return true;
         }
 
@@ -289,9 +289,9 @@ class Session implements \ArrayAccess
         return $this->eventEmitter;
     }
 
-    public function addFingerprintGenerator(FingerprintGenerator\FingerprintGeneratorInterface $fingerprint_generator)
+    public function addFingerprintGenerator(FingerprintGenerator\FingerprintGeneratorInterface $fingerprintGenerator)
     {
-        $this->fingerprint_generators[] = $fingerprint_generator;
+        $this->fingerprintGenerators[] = $fingerprintGenerator;
     }
 
     /**
@@ -301,8 +301,8 @@ class Session implements \ArrayAccess
     {
         $fingerprint = '';
 
-        foreach ($this->fingerprint_generators as $fingerprint_generator) {
-            $fingerprint .= $fingerprint_generator->generate();
+        foreach ($this->fingerprintGenerators as $fingerprintGenerator) {
+            $fingerprint .= $fingerprintGenerator->generate();
         }
 
         return $fingerprint;
@@ -323,7 +323,7 @@ class Session implements \ArrayAccess
      */
     public function getFirstTrace()
     {
-        return $this->first_trace;
+        return $this->firstTrace;
     }
 
     /**
@@ -331,7 +331,7 @@ class Session implements \ArrayAccess
      */
     protected function updateLastTrace()
     {
-        $this->last_trace = time();
+        $this->lastTrace = time();
     }
 
     /**
@@ -341,7 +341,7 @@ class Session implements \ArrayAccess
      */
     public function getLastTrace()
     {
-        return $this->last_trace;
+        return $this->lastTrace;
     }
 
     /**
@@ -351,7 +351,7 @@ class Session implements \ArrayAccess
      */
     public function getRegenerationTrace()
     {
-        return $this->regeneration_trace;
+        return $this->regenerationTrace;
     }
 
     /**
@@ -383,9 +383,9 @@ class Session implements \ArrayAccess
     /**
      * @return int
      */
-    public function getRequestsCounter()
+    public function getRequestsCount()
     {
-        return $this->requests_counter;
+        return $this->requestsCount;
     }
 
     /**
@@ -492,10 +492,10 @@ class Session implements \ArrayAccess
 
         // metadata
         $metadata = $values[self::METADATA_NAMESPACE];
-        $this->first_trace = $metadata['first_trace'];
-        $this->last_trace = $metadata['last_trace'];
-        $this->regeneration_trace = $metadata['regeneration_trace'];
-        $this->requests_counter = $metadata['requests_count'];
+        $this->firstTrace = $metadata['firstTrace'];
+        $this->lastTrace = $metadata['lastTrace'];
+        $this->regenerationTrace = $metadata['regenerationTrace'];
+        $this->requestsCount = $metadata['requestsCount'];
         $this->fingerprint = $metadata['fingerprint'];
 
         // values
@@ -514,10 +514,10 @@ class Session implements \ArrayAccess
         $values = $this->values;
 
         $values[self::METADATA_NAMESPACE] = [
-          'first_trace' => $this->getFirstTrace(),
-          'last_trace' => $this->getLastTrace(),
-          'regeneration_trace' => $this->getRegenerationTrace(),
-          'requests_count' => $this->getRequestsCounter(),
+          'firstTrace' => $this->getFirstTrace(),
+          'lastTrace' => $this->getLastTrace(),
+          'regenerationTrace' => $this->getRegenerationTrace(),
+          'requestsCount' => $this->getRequestsCount(),
           'fingerprint' => $this->getFingerprint(),
         ];
 

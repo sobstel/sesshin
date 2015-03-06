@@ -1,3 +1,4 @@
 tests/coverage
 tests/testdox
 vendor
+.idea

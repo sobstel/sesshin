@@ -19,15 +19,15 @@ class Cookie implements StoreInterface
     private $secure;
 
     /** @var bool */
-    private $http_only;
+    private $httpOnly;
 
-    public function __construct($name = 'sid', $path = '/', $domain = null, $secure = false, $http_only = true)
+    public function __construct($name = 'sid', $path = '/', $domain = null, $secure = false, $httpOnly = true)
     {
         $this->name = $name;
         $this->path = $path;
         $this->domain = $domain;
         $this->secure = $secure;
-        $this->http_only = $http_only;
+        $this->httpOnly = $httpOnly;
     }
 
     /**
@@ -35,7 +35,7 @@ class Cookie implements StoreInterface
      */
     public function setId($id)
     {
-        if (setcookie($this->name, $id, 0, $this->path, $this->domain, $this->secure, $this->http_only)) {
+        if (setcookie($this->name, $id, 0, $this->path, $this->domain, $this->secure, $this->httpOnly)) {
             $this->id = $id;
         }
     }
@@ -63,6 +63,6 @@ class Cookie implements StoreInterface
      */
     public function unsetId()
     {
-        setcookie($this->name, '', 1, $this->path, $this->domain, $this->secure, $this->http_only);
+        setcookie($this->name, '', 1, $this->path, $this->domain, $this->secure, $this->httpOnly);
     }
 }

@@ -5,16 +5,16 @@ use League\Sesshin\Session as BaseSession;
 
 class Session extends BaseSession
 {
-    private $user_id_key = '_user_id';
+    private $userIdKey = '_user_id';
 
-    public function setUserIdKey($user_id_key)
+    public function setUserIdKey($userIdKey)
     {
-        $this->user_id_key = $user_id_key;
+        $this->userIdKey = $userIdKey;
     }
 
     public function getUserIdKey()
     {
-        return $this->user_id_key;
+        return $this->userIdKey;
     }
 
     public function getUserId()
@@ -22,9 +22,9 @@ class Session extends BaseSession
         return $this->getValue($this->getUserIdKey());
     }
 
-    public function login($user_id)
+    public function login($userId)
     {
-        $this->setValue($this->getUserIdKey(), $user_id);
+        $this->setValue($this->getUserIdKey(), $userId);
     }
 
     public function isLogged()

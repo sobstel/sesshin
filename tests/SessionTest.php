@@ -15,8 +15,8 @@ class SessionTest extends TestCase
             $session = new Session($this->getStoreMock());
         }
 
-        $id_handler = $this->getMock('\League\Sesshin\Id\Handler', array('generateId', 'getId', 'setId', 'issetId', 'unsetId'));
-        $session->setIdHandler($id_handler);
+        $idHandler = $this->getMock('\League\Sesshin\Id\Handler', array('generateId', 'getId', 'setId', 'issetId', 'unsetId'));
+        $session->setIdHandler($idHandler);
 
         $eventEmitter = $this->getMock('\League\Event\Emitter', array('emit', 'addListener'));
         $session->setEventEmitter($eventEmitter);
@@ -49,11 +49,11 @@ class SessionTest extends TestCase
     public function testCanSetValueToCustomNamespace()
     {
         $session = $this->setUpDefaultSession();
-        $ref_prop = $this->setPropertyAccessible($session, 'values');
+        $refProp = $this->setPropertyAccessible($session, 'values');
 
         $session->setValue('name', 'value', 'namespace');
 
-        $values = $ref_prop->getValue($session);
+        $values = $refProp->getValue($session);
         $this->assertEquals('value', $values['namespace']['name']);
     }
 
@@ -139,14 +139,14 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::getRequestsCounter
+     * @covers League\Sesshin\Session::getRequestsCount
      */
-    public function testCanGetRequestsCounter()
+    public function testCanGetRequestsCount()
     {
         $session = $this->setUpDefaultSession();
         $value = 37;
-        $this->setPropertyValue($session, 'requests_counter', $value);
-        $this->assertEquals($value, $session->getRequestsCounter());
+        $this->setPropertyValue($session, 'requestsCount', $value);
+        $this->assertEquals($value, $session->getRequestsCount());
     }
 
     /**
@@ -165,9 +165,9 @@ class SessionTest extends TestCase
     public function testCreateMethodUnsetsAllValues()
     {
         $session = $this->setUpDefaultSession();
-        $ref_prop_values = $this->setPropertyValue($session, 'values', array(1, 2, 3, 4));
+        $refPropValues = $this->setPropertyValue($session, 'values', array(1, 2, 3, 4));
         $session->create();
-        $this->assertEmpty($ref_prop_values->getValue($session));
+        $this->assertEmpty($refPropValues->getValue($session));
     }
 
     /**
@@ -176,9 +176,9 @@ class SessionTest extends TestCase
     public function testCreateMethodResetsFirstTrace()
     {
         $session = $this->setUpDefaultSession();
-        $first_trace = $session->getFirstTrace();
+        $firstTrace = $session->getFirstTrace();
         $session->create();
-        $this->assertNotEquals($first_trace, $session->getFirstTrace());
+        $this->assertNotEquals($firstTrace, $session->getFirstTrace());
     }
 
     /**
@@ -187,19 +187,19 @@ class SessionTest extends TestCase
     public function testCreateMethodResetsLastTrace()
     {
         $session = $this->setUpDefaultSession();
-        $last_trace = $session->getLastTrace();
+        $lastTrace = $session->getLastTrace();
         $session->create();
-        $this->assertNotEquals($last_trace, $session->getLastTrace());
+        $this->assertNotEquals($lastTrace, $session->getLastTrace());
     }
 
     /**
      * @covers League\Sesshin\Session::create
      */
-    public function testCreateMethodResetsRequestsCounter()
+    public function testCreateMethodResetsRequestsCount()
     {
         $session = $this->setUpDefaultSession();
         $session->create();
-        $this->assertEquals(1, $session->getRequestsCounter());
+        $this->assertEquals(1, $session->getRequestsCount());
     }
 
     /**
@@ -208,13 +208,13 @@ class SessionTest extends TestCase
     public function testCreateMethodResetsIdRegenerationTrace()
     {
         $session = $this->setUpDefaultSession();
-        $regeneration_trace = $session->getRegenerationTrace();
+        $regenerationTrace = $session->getRegenerationTrace();
         $session->create();
-        $this->assertNotEquals($regeneration_trace, $session->getRegenerationTrace());
+        $this->assertNotEquals($regenerationTrace, $session->getRegenerationTrace());
 
         $value = 1;
         $session = $this->setUpDefaultSession();
-        $this->setPropertyValue($session, 'regeneration_trace', $value);
+        $this->setPropertyValue($session, 'regenerationTrace', $value);
         $session->create();
         $this->assertNotEquals($value, $session->getRegenerationTrace());
 
@@ -365,12 +365,12 @@ class SessionTest extends TestCase
         $session->expects($this->once())->method('getFingerprint')->will($this->returnValue('abc'));
         $session->expects($this->once())->method('generateFingerprint')->will($this->returnValue('abc'));
 
-        $requests_counter = $session->getRequestsCounter();
+        $requests_counter = $session->getRequestsCount();
 
         $session->open();
 
         $this->assertSame(true, $session->isOpened());
-        $this->assertEquals($requests_counter + 1, $session->getRequestsCounter());
+        $this->assertEquals($requests_counter + 1, $session->getRequestsCount());
     }
 
     /**
@@ -415,8 +415,8 @@ class SessionTest extends TestCase
     public function testSessionIdShouldBeRegeneratedIfIdRequestsLimitReached()
     {
         $session = new Session($this->getStoreMock());
-        $this->setPropertyValue($session, 'requests_counter', 5);
-        $this->setPropertyValue($session, 'id_requests_limit', 5);
+        $this->setPropertyValue($session, 'requestsCount', 5);
+        $this->setPropertyValue($session, 'idRequestsLimit', 5);
         $this->assertSame(true, $this->invokeMethod($session, 'shouldRegenerateId'));
     }
 
@@ -426,8 +426,8 @@ class SessionTest extends TestCase
     public function testSessionIdShouldBeRegeneratedIfIdTtlLimitReached()
     {
         $session = new Session($this->getStoreMock());
-        $this->setPropertyValue($session, 'id_ttl', 60);
-        $this->setPropertyValue($session, 'regeneration_trace', time() - 90);
+        $this->setPropertyValue($session, 'idTtl', 60);
+        $this->setPropertyValue($session, 'regenerationTrace', time() - 90);
         $this->assertSame(true, $this->invokeMethod($session, 'shouldRegenerateId'));
     }
 
@@ -437,10 +437,10 @@ class SessionTest extends TestCase
     public function testSessionIdShouldNotBeRegeneratedIfLimitsNotReached()
     {
         $session = new Session($this->getStoreMock());
-        $this->setPropertyValue($session, 'requests_counter', 5);
-        $this->setPropertyValue($session, 'id_requests_limit', 6);
-        $this->setPropertyValue($session, 'id_ttl', 60);
-        $this->setPropertyValue($session, 'regeneration_trace', time() - 30);
+        $this->setPropertyValue($session, 'requestsCount', 5);
+        $this->setPropertyValue($session, 'idRequestsLimit', 6);
+        $this->setPropertyValue($session, 'idTtl', 60);
+        $this->setPropertyValue($session, 'regenerationTrace', time() - 30);
         $this->assertSame(false, $this->invokeMethod($session, 'shouldRegenerateId'));
     }
 

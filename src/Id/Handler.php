@@ -11,20 +11,20 @@ use Sesshin\Id\Store\Cookie as CookieStore;
 class Handler
 {
     /** @var StoreInterface */
-    private $id_store;
+    private $idStore;
 
     /** @var \Sesshin\EntropyGenerator\EntropyGeneratorInterface */
-    private $entropy_generator;
+    private $entropyGenerator;
 
     /** @var string Hash algo used to generate session ID (it hashes entropy). */
-    private $hash_algo = 'sha1';
+    private $hashAlgo = 'sha1';
 
     /**
-     * @param StoreInterface $id_store
+     * @param StoreInterface $idStore
      */
-    public function setIdStore(StoreInterface $id_store)
+    public function setIdStore(StoreInterface $idStore)
     {
-        $this->id_store = $id_store;
+        $this->idStore = $idStore;
     }
 
     /**
@@ -32,21 +32,21 @@ class Handler
      */
     public function getIdStore()
     {
-        if (!$this->id_store) {
-            $this->id_store = new CookieStore();
+        if (!$this->idStore) {
+            $this->idStore = new CookieStore();
         }
 
-        return $this->id_store;
+        return $this->idStore;
     }
 
     /**
      * Sets entropy that is used to generate session id.
      *
-     * @param \Sesshin\EntropyGenerator\EntropyGeneratorInterface $entropy_generator
+     * @param \Sesshin\EntropyGenerator\EntropyGeneratorInterface $entropyGenerator
      */
-    public function setEntropyGenerator(EntropyGenerator\EntropyGeneratorInterface $entropy_generator)
+    public function setEntropyGenerator(EntropyGenerator\EntropyGeneratorInterface $entropyGenerator)
     {
-        $this->entropy_generator = $entropy_generator;
+        $this->entropyGenerator = $entropyGenerator;
     }
 
     /**
@@ -54,11 +54,11 @@ class Handler
      */
     public function getEntropyGenerator()
     {
-        if (!$this->entropy_generator) {
-            $this->entropy_generator = new EntropyGenerator\Uniq();
+        if (!$this->entropyGenerator) {
+            $this->entropyGenerator = new EntropyGenerator\Uniq();
         }
 
-        return $this->entropy_generator;
+        return $this->entropyGenerator;
     }
 
     /**
@@ -67,7 +67,7 @@ class Handler
     public function setHashAlgo($algo)
     {
         if (in_array($algo, hash_algos())) {
-            $this->hash_algo = $algo;
+            $this->hashAlgo = $algo;
         } else {
             throw new Exception('Provided algo is not valid (not on hash_algos() list)');
         }
@@ -78,7 +78,7 @@ class Handler
      */
     public function getHashAlgo()
     {
-        return $this->hash_algo;
+        return $this->hashAlgo;
     }
 
     /**

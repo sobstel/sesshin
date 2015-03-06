@@ -12,16 +12,16 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function testReads512BytesFromFileByDefault()
     {
-        $urandom_generator = new File(__DIR__.'/files/urandom.txt');
-        $entropy = $urandom_generator->generate();
+        $urandomGenerator = new File(__DIR__.'/files/urandom.txt');
+        $entropy = $urandomGenerator->generate();
 
         $this->assertEquals(strlen($entropy), 512);
     }
 
     public function testBytesReadFromFileCanBeSpecified()
     {
-        $urandom_generator = new File(__DIR__.'/files/urandom.txt', 64);
-        $entropy = $urandom_generator->generate();
+        $urandomGenerator = new File(__DIR__.'/files/urandom.txt', 64);
+        $entropy = $urandomGenerator->generate();
 
         $this->assertEquals(strlen($entropy), 64);
     }
@@ -31,7 +31,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
      */
     public function testThrowsExceptionOnEmptyFile()
     {
-        $file_generator = new File(__DIR__.'/files/empty.txt');
-        $file_generator->generate();
+        $fileGenerator = new File(__DIR__.'/files/empty.txt');
+        $fileGenerator->generate();
     }
 }
