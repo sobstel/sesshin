@@ -1,5 +1,5 @@
 <?php
-namespace League\Sesshin\Event;
+namespace Sesshin\Event;
 
 class InvalidFingerprint extends Event
 {

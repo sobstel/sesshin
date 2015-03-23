@@ -1,7 +1,7 @@
 <?php
-namespace League\Sesshin\User;
+namespace Sesshin\User;
 
-use League\Sesshin\Session as BaseSession;
+use Sesshin\Session as BaseSession;
 
 class Session extends BaseSession
 {

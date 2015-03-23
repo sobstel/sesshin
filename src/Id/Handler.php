@@ -1,5 +1,5 @@
 <?php
-namespace League\Sesshin\Id;
+namespace Sesshin\Id;
 
 use Sesshin\League\EntropyGenerator;
 use Sesshin\Id\Store\StoreInterface;

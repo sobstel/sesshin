@@ -1,5 +1,5 @@
 <?php
-namespace League\Sesshin\FingerprintGenerator;
+namespace Sesshin\FingerprintGenerator;
 
 interface FingerprintGeneratorInterface
 {

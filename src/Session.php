@@ -1,16 +1,16 @@
 <?php
-namespace League\Sesshin;
+namespace Sesshin;
 
 use League\Event\EmitterInterface;
 use League\Event\Emitter as EventEmitter;
-use League\Sesshin\Store\StoreInterface;
+use Sesshin\Store\StoreInterface;
 
 class Session implements \ArrayAccess
 {
     const DEFAULT_NAMESPACE = 'default';
     const METADATA_NAMESPACE = '__metadata__';
 
-    /*** @var \League\Sesshin\Id\Handler */
+    /*** @var \Sesshin\Id\Handler */
     private $idHandler;
 
     /*** @var int Number of requests after which id is regeneratd */

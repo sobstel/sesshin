@@ -1,5 +1,5 @@
 <?php
-namespace League\Sesshin;
+namespace Sesshin;
 
 class Exception extends \Exception
 {

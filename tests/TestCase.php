@@ -1,5 +1,5 @@
 <?php
-namespace League\Sesshin\Tests;
+namespace Sesshin\Tests;
 
 class TestCase extends \PHPUnit_Framework_TestCase
 {

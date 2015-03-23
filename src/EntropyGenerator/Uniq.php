@@ -1,5 +1,5 @@
 <?php
-namespace League\Sesshin\EntropyGenerator;
+namespace Sesshin\EntropyGenerator;
 
 class Uniq implements EntropyGeneratorInterface
 {

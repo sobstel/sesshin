@@ -1,5 +1,5 @@
 <?php
-namespace League\Sesshin\Store;
+namespace Sesshin\Store;
 
 interface StoreInterface
 {

@@ -1,13 +1,13 @@
 <?php
-namespace League\Sesshin\Tests;
+namespace Sesshin\Tests;
 
-use League\Sesshin\Session;
-use League\Sesshin\Event;
+use Sesshin\Session;
+use Sesshin\Event;
 
 class SessionTest extends TestCase
 {
     /**
-     * @var League\Sesshin\Session
+     * @var Sesshin\Session
      */
     private function setUpDefaultSession($session = null)
     {
@@ -15,7 +15,7 @@ class SessionTest extends TestCase
             $session = new Session($this->getStoreMock());
         }
 
-        $idHandler = $this->getMock('\League\Sesshin\Id\Handler', array('generateId', 'getId', 'setId', 'issetId', 'unsetId'));
+        $idHandler = $this->getMock('\Sesshin\Id\Handler', array('generateId', 'getId', 'setId', 'issetId', 'unsetId'));
         $session->setIdHandler($idHandler);
 
         $eventEmitter = $this->getMock('\League\Event\Emitter', array('emit', 'addListener'));
@@ -26,11 +26,11 @@ class SessionTest extends TestCase
 
     private function getStoreMock()
     {
-        return $this->getMock('\League\Sesshin\Store\StoreInterface', array('save', 'fetch', 'delete'));
+        return $this->getMock('\Sesshin\Store\StoreInterface', array('save', 'fetch', 'delete'));
     }
 
     /**
-     * @covers League\Sesshin\Session::setValue
+     * @covers Sesshin\Session::setValue
      */
     public function testValueIsSetToDefaultNamespaceByDefault()
     {
@@ -44,7 +44,7 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::setValue
+     * @covers Sesshin\Session::setValue
      */
     public function testCanSetValueToCustomNamespace()
     {
@@ -58,7 +58,7 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::getValue
+     * @covers Sesshin\Session::getValue
      * @depends testValueIsSetToDefaultNamespaceByDefault
      */
     public function testCanGetValue()
@@ -69,7 +69,7 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::getValue
+     * @covers Sesshin\Session::getValue
      * @depends testValueIsSetToDefaultNamespaceByDefault
      */
     public function testCanGetValueMethodReturnsNullIfNoValueForGivenName()
@@ -79,7 +79,7 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::issetValue
+     * @covers Sesshin\Session::issetValue
      * @depends testValueIsSetToDefaultNamespaceByDefault
      */
     public function testCanCheckIfValueIsSet()
@@ -90,7 +90,7 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::unsetValue
+     * @covers Sesshin\Session::unsetValue
      * @depends testValueIsSetToDefaultNamespaceByDefault
      */
     public function testCanUnsetValues()
@@ -102,7 +102,7 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::getUnsetValue
+     * @covers Sesshin\Session::getUnsetValue
      */
     public function testCanGetAndUnsetValue()
     {
@@ -114,7 +114,7 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::getValues
+     * @covers Sesshin\Session::getValues
      */
     public function testCanGetAllValuesForNamespace()
     {
@@ -125,7 +125,7 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::unsetValues
+     * @covers Sesshin\Session::unsetValues
      */
     public function testCanUnsetAllValuesForNamespace()
     {
@@ -139,7 +139,7 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::getRequestsCount
+     * @covers Sesshin\Session::getRequestsCount
      */
     public function testCanGetRequestsCount()
     {
@@ -150,7 +150,7 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::create
+     * @covers Sesshin\Session::create
      */
     public function testCreateMethodGeneratesId()
     {
@@ -160,7 +160,7 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::create
+     * @covers Sesshin\Session::create
      */
     public function testCreateMethodUnsetsAllValues()
     {
@@ -171,7 +171,7 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::create
+     * @covers Sesshin\Session::create
      */
     public function testCreateMethodResetsFirstTrace()
     {
@@ -182,7 +182,7 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::create
+     * @covers Sesshin\Session::create
      */
     public function testCreateMethodResetsLastTrace()
     {
@@ -193,7 +193,7 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::create
+     * @covers Sesshin\Session::create
      */
     public function testCreateMethodResetsRequestsCount()
     {
@@ -203,7 +203,7 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::create
+     * @covers Sesshin\Session::create
      */
     public function testCreateMethodResetsIdRegenerationTrace()
     {
@@ -222,17 +222,17 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::create
+     * @covers Sesshin\Session::create
      */
     public function testCreateMethodGeneratesFingerprint()
     {
-        $session = $this->setUpDefaultSession($this->getMock('\League\Sesshin\Session', array('generateFingerprint'), [$this->getStoreMock()]));
+        $session = $this->setUpDefaultSession($this->getMock('\Sesshin\Session', array('generateFingerprint'), [$this->getStoreMock()]));
         $session->expects($this->once())->method('generateFingerprint');
         $session->create();
     }
 
     /**
-     * @covers League\Sesshin\Session::create
+     * @covers Sesshin\Session::create
      */
     public function testCreateMethodOpensSession()
     {
@@ -242,11 +242,11 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::open
+     * @covers Sesshin\Session::open
      */
     public function testOpenMethodWhenCalledWithTrueThenCreatesNewSessionIfSessionNotExistsAlready()
     {
-        $session = $this->setUpDefaultSession($this->getMock('\League\Sesshin\Session', array('create'), [$this->getStoreMock()]));
+        $session = $this->setUpDefaultSession($this->getMock('\Sesshin\Session', array('create'), [$this->getStoreMock()]));
         $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(false));
         $session->expects($this->once())->method('create');
 
@@ -254,11 +254,11 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::open
+     * @covers Sesshin\Session::open
      */
     public function testOpenMethodWhenCalledWithTrueThenDoesNotCreateNewSessionIfSessionIdExistsAlready()
     {
-        $session = $this->setUpDefaultSession($this->getMock('\League\Sesshin\Session', array('create'), [$this->getStoreMock()]));
+        $session = $this->setUpDefaultSession($this->getMock('\Sesshin\Session', array('create'), [$this->getStoreMock()]));
         $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(true));
         $session->expects($this->never())->method('create');
 
@@ -266,22 +266,22 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::open
+     * @covers Sesshin\Session::open
      */
     public function testOpenMethodWhenCalledWithFalseThenDoesNotCreateNewSession()
     {
-        $session = $this->setUpDefaultSession($this->getMock('\League\Sesshin\Session', array('create'), [$this->getStoreMock()]));
+        $session = $this->setUpDefaultSession($this->getMock('\Sesshin\Session', array('create'), [$this->getStoreMock()]));
         $session->expects($this->never())->method('create');
 
         $session->open(false);
     }
 
     /**
-     * @covers League\Sesshin\Session::open
+     * @covers Sesshin\Session::open
      */
     public function testOpenMethodLoadsSessionDataIfSessionExists()
     {
-        $session = $this->setUpDefaultSession($this->getMock('\League\Sesshin\Session', array('create', 'load'), [$this->getStoreMock()]));
+        $session = $this->setUpDefaultSession($this->getMock('\Sesshin\Session', array('create', 'load'), [$this->getStoreMock()]));
         $session->expects($this->any())->method('isOpened')->will($this->returnValue(false));
         $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(true));
         $session->expects($this->once())->method('load');
@@ -290,11 +290,11 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::open
+     * @covers Sesshin\Session::open
      */
     public function testOpenMethodDoesNotLoadSessionDataIfSessionNotExists()
     {
-        $session = $this->setUpDefaultSession($this->getMock('\League\Sesshin\Session', array('create', 'load'), [$this->getStoreMock()]));
+        $session = $this->setUpDefaultSession($this->getMock('\Sesshin\Session', array('create', 'load'), [$this->getStoreMock()]));
         $session->expects($this->any())->method('isOpened')->will($this->returnValue(false));
         $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(false));
         $session->expects($this->never())->method('load');
@@ -303,11 +303,11 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::open
+     * @covers Sesshin\Session::open
      */
     public function testOpenMethodTriggersSessionNoDataOrExpiredEventIfNoDataPresentAfterLoad()
     {
-        $session = $this->setUpDefaultSession($this->getMock('\League\Sesshin\Session', array('create', 'load', 'getFirstTrace'), [$this->getStoreMock()]));
+        $session = $this->setUpDefaultSession($this->getMock('\Sesshin\Session', array('create', 'load', 'getFirstTrace'), [$this->getStoreMock()]));
         $session->expects($this->any())->method('isOpened')->will($this->returnValue(false));
         $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(true));
         $session->expects($this->once())->method('getFirstTrace')->will($this->returnValue(false));
@@ -317,11 +317,11 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::open
+     * @covers Sesshin\Session::open
      */
     public function testOpenMethodTriggersSessionExpiredEventIfSessionExpired()
     {
-        $session = $this->setUpDefaultSession($this->getMock('\League\Sesshin\Session', array('create', 'load', 'getFirstTrace', 'isExpired'), [$this->getStoreMock()]));
+        $session = $this->setUpDefaultSession($this->getMock('\Sesshin\Session', array('create', 'load', 'getFirstTrace', 'isExpired'), [$this->getStoreMock()]));
         $session->expects($this->any())->method('isOpened')->will($this->returnValue(false));
         $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(true));
         $session->expects($this->once())->method('getFirstTrace')->will($this->returnValue(time()));
@@ -335,11 +335,11 @@ class SessionTest extends TestCase
      * Fingerpring is generated, so it can be compared with the one in session
      * metadata for session validity.
      *
-     * @covers League\Sesshin\Session::open
+     * @covers Sesshin\Session::open
      */
     public function testOpenMethodTriggersInvalidFingerprintEventIfLoadedFingerprintInvalid()
     {
-        $session = $this->setUpDefaultSession($this->getMock('\League\Sesshin\Session', array('create', 'load', 'getFirstTrace', 'isExpired', 'getFingerprint', 'generateFingerprint'), [$this->getStoreMock()]));
+        $session = $this->setUpDefaultSession($this->getMock('\Sesshin\Session', array('create', 'load', 'getFirstTrace', 'isExpired', 'getFingerprint', 'generateFingerprint'), [$this->getStoreMock()]));
         $session->expects($this->any())->method('isOpened')->will($this->returnValue(false));
         $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(true));
         $session->expects($this->once())->method('getFirstTrace')->will($this->returnValue(time()));
@@ -352,12 +352,12 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::open
+     * @covers Sesshin\Session::open
      * @depends testCanGetRequestsCounter
      */
     public function testOpenMethodOpenSessionAndIncrementsRequestsCounter()
     {
-        $session = $this->setUpDefaultSession($this->getMock('\League\Sesshin\Session', array('create', 'load', 'getFirstTrace', 'isExpired', 'getFingerprint', 'generateFingerprint'), [$this->getStoreMock()]));
+        $session = $this->setUpDefaultSession($this->getMock('\Sesshin\Session', array('create', 'load', 'getFirstTrace', 'isExpired', 'getFingerprint', 'generateFingerprint'), [$this->getStoreMock()]));
         $session->expects($this->any())->method('isOpened')->will($this->returnValue(false));
         $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(true));
         $session->expects($this->once())->method('getFirstTrace')->will($this->returnValue(time()));
@@ -374,8 +374,8 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::isOpen
-     * @covers League\Sesshin\Session::isOpened
+     * @covers Sesshin\Session::isOpen
+     * @covers Sesshin\Session::isOpened
      */
     public function testCanCheckIfSessionIsOpened()
     {
@@ -389,28 +389,28 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::setIdHandler
-     * @covers League\Sesshin\Session::getIdHandler
+     * @covers Sesshin\Session::setIdHandler
+     * @covers Sesshin\Session::getIdHandler
      */
     public function testCanSetGetIdHandler()
     {
         $session = new Session($this->getStoreMock());
-        $id_handler = new \League\Sesshin\Id\Handler();
+        $id_handler = new \Sesshin\Id\Handler();
         $session->setIdHandler($id_handler);
         $this->assertSame($id_handler, $session->getIdHandler());
     }
 
     /**
-     * @covers League\Sesshin\Session::getIdHandler
+     * @covers Sesshin\Session::getIdHandler
      */
     public function testUsesDefaultIdHandlerIfNotSet()
     {
         $session = new Session($this->getStoreMock());
-        $this->assertEquals('League\Sesshin\Id\Handler', get_class($session->getIdHandler()));
+        $this->assertEquals('Sesshin\Id\Handler', get_class($session->getIdHandler()));
     }
 
     /**
-     * @covers League\Sesshin\Session::shouldRegenerateId
+     * @covers Sesshin\Session::shouldRegenerateId
      */
     public function testSessionIdShouldBeRegeneratedIfIdRequestsLimitReached()
     {
@@ -421,7 +421,7 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::shouldRegenerateId
+     * @covers Sesshin\Session::shouldRegenerateId
      */
     public function testSessionIdShouldBeRegeneratedIfIdTtlLimitReached()
     {
@@ -432,7 +432,7 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::shouldRegenerateId
+     * @covers Sesshin\Session::shouldRegenerateId
      */
     public function testSessionIdShouldNotBeRegeneratedIfLimitsNotReached()
     {
@@ -445,7 +445,7 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::shouldRegenerateId
+     * @covers Sesshin\Session::shouldRegenerateId
      */
     public function testSessionIdShouldNotBeRegeneratedIfLimitsNotSet()
     {
@@ -454,8 +454,8 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::setEventEmitter
-     * @covers League\Sesshin\Session::getEventEmitter
+     * @covers Sesshin\Session::setEventEmitter
+     * @covers Sesshin\Session::getEventEmitter
      */
     public function testCanSetGetEventEmitter()
     {
@@ -466,7 +466,7 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::getEventEmitter
+     * @covers Sesshin\Session::getEventEmitter
      */
     public function testUsesDefaultEventEmitterIfNotSet()
     {
@@ -475,32 +475,32 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::offsetSet
-     * @covers League\Sesshin\Session::offsetGet
-     * @covers League\Sesshin\Session::offsetExists
-     * @covers League\Sesshin\Session::offsetUnset
+     * @covers Sesshin\Session::offsetSet
+     * @covers Sesshin\Session::offsetGet
+     * @covers Sesshin\Session::offsetExists
+     * @covers Sesshin\Session::offsetUnset
      */
     public function testImplementsArrayAccessForSessionValues()
     {
-        $session = $this->getMock('\League\Sesshin\Session', array('setValue'), [$this->getStoreMock()]);
+        $session = $this->getMock('\Sesshin\Session', array('setValue'), [$this->getStoreMock()]);
         $session->expects($this->once())->method('setValue')->with($this->equalTo('key'), $this->equalTo('value'));
         $session['key'] = 'value';
 
-        $session = $this->getMock('\League\Sesshin\Session', array('getValue'), [$this->getStoreMock()]);
+        $session = $this->getMock('\Sesshin\Session', array('getValue'), [$this->getStoreMock()]);
         $session->expects($this->once())->method('getValue')->with($this->equalTo('key'));
         $session['key'];
 
-        $session = $this->getMock('\League\Sesshin\Session', array('issetValue'), [$this->getStoreMock()]);
+        $session = $this->getMock('\Sesshin\Session', array('issetValue'), [$this->getStoreMock()]);
         $session->expects($this->once())->method('issetValue')->with($this->equalTo('key'));
         isset($session['key']);
 
-        $session = $this->getMock('\League\Sesshin\Session', array('unsetValue'), [$this->getStoreMock()]);
+        $session = $this->getMock('\Sesshin\Session', array('unsetValue'), [$this->getStoreMock()]);
         $session->expects($this->once())->method('unsetValue')->with($this->equalTo('key'));
         unset($session['key']);
     }
 
     /**
-     * @covers League\Sesshin\Session::load
+     * @covers Sesshin\Session::load
      * @depends testOpenMethodLoadsSessionDataIfSessionExists
      */
     public function testLoadMethodFetchesDataFromStore()
@@ -513,7 +513,7 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers League\Sesshin\Session::load
+     * @covers Sesshin\Session::load
      */
     public function testLoadMethodReturnsFalseIfNoDataInStore()
     {

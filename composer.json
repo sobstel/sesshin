@@ -16,8 +16,8 @@
     },
     "autoload": {
         "psr-4": {
-            "League\\Sesshin\\Tests\\": "tests/",
-            "League\\Sesshin\\": "src/"
+            "Sesshin\\Tests\\": "tests/",
+            "Sesshin\\": "src/"
         }
     },
     "require": {

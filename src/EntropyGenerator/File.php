@@ -1,7 +1,7 @@
 <?php
-namespace League\Sesshin\EntropyGenerator;
+namespace Sesshin\EntropyGenerator;
 
-use League\Sesshin\Exception;
+use Sesshin\Exception;
 
 class File implements EntropyGeneratorInterface
 {

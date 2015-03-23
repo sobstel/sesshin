@@ -1,5 +1,5 @@
 <?php
-namespace League\Sesshin\Id\Store;
+namespace Sesshin\Id\Store;
 
 class Cookie implements StoreInterface
 {
