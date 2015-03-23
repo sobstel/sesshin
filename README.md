@@ -34,7 +34,7 @@ Features:
 
 ### Installation
 
-Use composer: https://packagist.org/packages/sobstel/sesshin
+Use composer: https://packagist.org/packages/sobstel/sesshinq
 
 ### Create new session
 
@@ -95,7 +95,7 @@ $eventEmitter->addListener(Event::INVALID_FINGERPRINT, function(Event $event) {
 
 ```php
 use Sesshin\Session\User;
-use League\Sesshin\Store\FileStore;
+use Sesshin\Store\FileStore;
 
 $userSession = new User(new FileStore('/path/to/dir'));
 
@@ -113,8 +113,8 @@ if ($userSession->isLogged()) {
 Sesshin provides default FileStore.
 
 ```php
-use League\Sesshin\Session;
-use League\Sesshin\Store\FileStore;
+use Sesshin\Session;
+use Sesshin\Store\FileStore;
 
 $session = new Session(new FileStore('/path/to/dir'));
 ```
@@ -126,7 +126,7 @@ Alternatively you can use one of numerous
 providers.
 
 ```php
-use League\Sesshin\Store\DoctrineCache;
+use Sesshin\Store\DoctrineCache;
 use Doctrine\Common\Cache\MemcachedCache;
 
 $memcached = new Memcached;
@@ -135,7 +135,7 @@ $memcached = new Memcached;
 $session = new Session(new DoctrineCache(new MemcachedCache($memcached)));
 ```
 
-You can also implement your own store using `League\Sesshin\Store\StoreInterface`.
+You can also implement your own store using `Sesshin\Store\StoreInterface`.
 
 ### Change entropy algorithm
 
