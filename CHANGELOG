@@ -1,5 +1,9 @@
 # Change Log
 
-## [Unreleased][unreleased]
+## 1.1.0
 
-- Migration to The PHP League.
+- General refactoring related to adhering to thephpleague standards (new 
+  store interface, doctrine cache store adapter, league/event over in-built 
+  listeners, following psr-like formatting, test against 5.6, etc etc)
+  https://github.com/sobstel/sesshin/compare/1.0.0...v1.1.0
+
