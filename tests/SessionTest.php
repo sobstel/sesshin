@@ -18,8 +18,8 @@ class SessionTest extends TestCase
         $idHandler = $this->getMock('\Sesshin\Id\Handler', array('generateId', 'getId', 'setId', 'issetId', 'unsetId'));
         $session->setIdHandler($idHandler);
 
-        $eventEmitter = $this->getMock('\League\Event\Emitter', array('emit', 'addListener'));
-        $session->setEventEmitter($eventEmitter);
+        $emitter = $this->getMock('\League\Event\Emitter', array('emit', 'addListener'));
+        $session->setEmitter($emitter);
 
         return $session;
     }
@@ -311,7 +311,7 @@ class SessionTest extends TestCase
         $session->expects($this->any())->method('isOpened')->will($this->returnValue(false));
         $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(true));
         $session->expects($this->once())->method('getFirstTrace')->will($this->returnValue(false));
-        $session->getEventEmitter()->expects($this->once())->method('emit')->with($this->equalTo(new Event\NoDataOrExpired($session)));
+        $session->getEmitter()->expects($this->once())->method('emit')->with($this->equalTo(new Event\NoDataOrExpired($session)));
 
         $session->open();
     }
@@ -326,7 +326,7 @@ class SessionTest extends TestCase
         $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(true));
         $session->expects($this->once())->method('getFirstTrace')->will($this->returnValue(time()));
         $session->expects($this->once())->method('isExpired')->will($this->returnValue(true));
-        $session->getEventEmitter()->expects($this->once())->method('emit')->with($this->equalTo(new Event\Expired($session)));
+        $session->getEmitter()->expects($this->once())->method('emit')->with($this->equalTo(new Event\Expired($session)));
 
         $session->open();
     }
@@ -346,7 +346,7 @@ class SessionTest extends TestCase
         $session->expects($this->once())->method('isExpired')->will($this->returnValue(false));
         $session->expects($this->once())->method('getFingerprint')->will($this->returnValue('abc'));
         $session->expects($this->once())->method('generateFingerprint')->will($this->returnValue('def'));
-        $session->getEventEmitter()->expects($this->once())->method('emit')->with($this->equalTo(new Event\InvalidFingerprint($session)));
+        $session->getEmitter()->expects($this->once())->method('emit')->with($this->equalTo(new Event\InvalidFingerprint($session)));
 
         $session->open();
     }
@@ -454,24 +454,24 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @covers Sesshin\Session::setEventEmitter
-     * @covers Sesshin\Session::getEventEmitter
+     * @covers Sesshin\Session::setEmitter
+     * @covers Sesshin\Session::getEmitter
      */
-    public function testCanSetGetEventEmitter()
+    public function testCanSetGetEmitter()
     {
         $session = new Session($this->getStoreMock());
-        $eventEmitter = new \League\Event\Emitter();
-        $session->setEventEmitter($eventEmitter);
-        $this->assertSame($eventEmitter, $session->getEventEmitter());
+        $emitter = new \League\Event\Emitter();
+        $session->setEmitter($emitter);
+        $this->assertSame($emitter, $session->getEmitter());
     }
 
     /**
-     * @covers Sesshin\Session::getEventEmitter
+     * @covers Sesshin\Session::getEmitter
      */
-    public function testUsesDefaultEventEmitterIfNotSet()
+    public function testUsesDefaultEmitterIfNotSet()
     {
         $session = new Session($this->getStoreMock());
-        $this->assertEquals('League\Event\Emitter', get_class($session->getEventEmitter()));
+        $this->assertEquals('League\Event\Emitter', get_class($session->getEmitter()));
     }
 
     /**

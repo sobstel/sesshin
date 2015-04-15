@@ -1,12 +1,13 @@
 <?php
 namespace Sesshin;
 
-use League\Event\EmitterInterface;
-use League\Event\Emitter as EventEmitter;
+use League\Event\EmitterAwareTrait;
 use Sesshin\Store\StoreInterface;
 
 class Session implements \ArrayAccess
 {
+    use EmitterAwareTrait;
+
     const DEFAULT_NAMESPACE = 'default';
     const METADATA_NAMESPACE = '__metadata__';
 
@@ -27,9 +28,6 @@ class Session implements \ArrayAccess
 
     /*** @var Store */
     private $store;
-
-    /*** @var EmitterInterface */
-    private $eventEmitter;
 
     /*** @var array Session values */
     private $values = array();
@@ -114,11 +112,11 @@ class Session implements \ArrayAccess
                 $this->load();
 
                 if (!$this->getFirstTrace()) {
-                    $this->getEventEmitter()->emit(new Event\NoDataOrExpired($this));
+                    $this->getEmitter()->emit(new Event\NoDataOrExpired($this));
                 } elseif ($this->isExpired()) {
-                    $this->getEventEmitter()->emit(new Event\Expired($this));
+                    $this->getEmitter()->emit(new Event\Expired($this));
                 } elseif ($this->generateFingerprint() != $this->getFingerprint()) {
-                    $this->getEventEmitter()->emit(new Event\InvalidFingerprint($this));
+                    $this->getEmitter()->emit(new Event\InvalidFingerprint($this));
                 } else {
                     $this->opened = true;
                     $this->requestsCount += 1;
@@ -270,23 +268,6 @@ class Session implements \ArrayAccess
     protected function getStore()
     {
         return $this->store;
-    }
-
-    public function setEventEmitter(EmitterInterface $eventEmitter)
-    {
-        $this->eventEmitter = $eventEmitter;
-    }
-
-    /**
-     * @return EmitterInterface
-     */
-    public function getEventEmitter()
-    {
-        if (!$this->eventEmitter) {
-            $this->eventEmitter = new EventEmitter(); // default
-        }
-
-        return $this->eventEmitter;
     }
 
     public function addFingerprintGenerator(FingerprintGenerator\FingerprintGeneratorInterface $fingerprintGenerator)
