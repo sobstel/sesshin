@@ -11,7 +11,7 @@ class UserAgent implements FingerprintGeneratorInterface
      */
     public function __construct($userAgent = null)
     {
-        if($userAgent) {
+        if($userAgent !== null) {
             $srv = array_merge(array('HTTP_USER_AGENT' => ''), $_SERVER);
             $userAgent = (string) $srv['HTTP_USER_AGENT'];
         }
