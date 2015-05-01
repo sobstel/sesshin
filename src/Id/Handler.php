@@ -63,7 +63,7 @@ class Handler
     }
 
     /**
-     * @param string Hash algorith accepted by hash extension.
+     * @param string $algo Hash algorith accepted by hash extension.
      */
     public function setHashAlgo($algo)
     {
