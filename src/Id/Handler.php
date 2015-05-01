@@ -2,6 +2,7 @@
 namespace Sesshin\Id;
 
 use Sesshin\EntropyGenerator\EntropyGeneratorInterface;
+use Sesshin\EntropyGenerator\Uniq;
 use Sesshin\Id\Store\StoreInterface;
 use Sesshin\Id\Store\Cookie as CookieStore;
 
@@ -55,7 +56,7 @@ class Handler
     public function getEntropyGenerator()
     {
         if (!$this->entropyGenerator) {
-            $this->entropyGenerator = new EntropyGenerator\Uniq();
+            $this->entropyGenerator = new Uniq();
         }
 
         return $this->entropyGenerator;
