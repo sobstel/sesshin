@@ -13,7 +13,7 @@ class UserAgent implements FingerprintGeneratorInterface
     {
         if($userAgent) {
             $srv = array_merge(array('HTTP_USER_AGENT' => ''), $_SERVER);
-            $userAgent = $srv['HTTP_USER_AGENT'];
+            $userAgent = (string) $srv['HTTP_USER_AGENT'];
         }
         $this->userAgent = $userAgent;
     }
