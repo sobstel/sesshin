@@ -102,7 +102,7 @@ class Session implements \ArrayAccess
      *
      * If called earlier, then second (and next ones) call does nothing
      *
-     * @param bool Create new session if not exists earlier?
+     * @param bool $createNewIfNotExists Create new session if not exists earlier?
      * @return bool Session opened?
      */
     public function open($createNewIfNotExists = false)
