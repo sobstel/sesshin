@@ -2,6 +2,7 @@
 namespace Sesshin;
 
 use League\Event\EmitterAwareTrait;
+use Sesshin\FingerprintGenerator\FingerprintGeneratorInterface;
 use Sesshin\Store\StoreInterface;
 
 class Session implements \ArrayAccess
@@ -44,7 +45,7 @@ class Session implements \ArrayAccess
     /*** @var int */
     private $requestsCount;
 
-    /*** @var array of \Sesshin\FingerprintGenerator\FingerprintGeneratorInterface */
+    /*** @var FingerprintGeneratorInterface[] */
     private $fingerprintGenerators = array();
 
     /*** @var string */
