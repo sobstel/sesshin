@@ -10,11 +10,12 @@ class Event extends BaseEvent
     protected $session;
 
     /**
-     * @param Session
-     * @param string
+     * @param string $name
+     * @param Session $session
      */
-    public function __construct(Session $session)
+    public function __construct($name, Session $session)
     {
+        parent::__construct($name);
         $this->session = $session;
     }
 
