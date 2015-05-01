@@ -1,7 +1,9 @@
 <?php
 namespace Sesshin\Id;
 
-use Sesshin\League\EntropyGenerator;
+use Sesshin\EntropyGenerator\EntropyGeneratorInterface;
+use Sesshin\EntropyGenerator\Uniq;
+use Sesshin\Exception;
 use Sesshin\Id\Store\StoreInterface;
 use Sesshin\Id\Store\Cookie as CookieStore;
 
@@ -13,7 +15,7 @@ class Handler
     /** @var StoreInterface */
     private $idStore;
 
-    /** @var \Sesshin\EntropyGenerator\EntropyGeneratorInterface */
+    /** @var EntropyGeneratorInterface */
     private $entropyGenerator;
 
     /** @var string Hash algo used to generate session ID (it hashes entropy). */
@@ -28,7 +30,7 @@ class Handler
     }
 
     /**
-     * @return StoreInterfaceStoreInterface
+     * @return StoreInterface
      */
     public function getIdStore()
     {
@@ -42,27 +44,28 @@ class Handler
     /**
      * Sets entropy that is used to generate session id.
      *
-     * @param \Sesshin\EntropyGenerator\EntropyGeneratorInterface $entropyGenerator
+     * @param EntropyGeneratorInterface $entropyGenerator
      */
-    public function setEntropyGenerator(EntropyGenerator\EntropyGeneratorInterface $entropyGenerator)
+    public function setEntropyGenerator(EntropyGeneratorInterface $entropyGenerator)
     {
         $this->entropyGenerator = $entropyGenerator;
     }
 
     /**
-     * @return \Sesshin\EntropyGenerator\EntropyGeneratorInterface
+     * @return EntropyGeneratorInterface
      */
     public function getEntropyGenerator()
     {
         if (!$this->entropyGenerator) {
-            $this->entropyGenerator = new EntropyGenerator\Uniq();
+            $this->entropyGenerator = new Uniq();
         }
 
         return $this->entropyGenerator;
     }
 
     /**
-     * @param string Hash algorith accepted by hash extension.
+     * @param string $algo Hash algorith accepted by hash extension.
+     * @throws Exception
      */
     public function setHashAlgo($algo)
     {
@@ -92,23 +95,35 @@ class Handler
         return $this->getId();
     }
 
+    /**
+     * @param string $id
+     */
     public function setId($id)
     {
         $this->getIdStore()->setId($id);
     }
 
+    /**
+     * @return string
+     */
     public function getId()
     {
         return $this->getIdStore()->getId();
     }
 
+    /**
+     * @return bool
+     */
     public function issetId()
     {
         return $this->getIdStore()->issetId();
     }
 
+    /**
+     * @return void
+     */
     public function unsetId()
     {
-        return $this->getIdStore()->unsetId();
+        $this->getIdStore()->unsetId();
     }
 }

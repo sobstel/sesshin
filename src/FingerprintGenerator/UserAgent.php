@@ -4,7 +4,7 @@ namespace Sesshin\FingerprintGenerator;
 class UserAgent implements FingerprintGeneratorInterface
 {
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function generate()
     {

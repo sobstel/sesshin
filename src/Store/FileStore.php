@@ -3,7 +3,7 @@ namespace Sesshin\Store;
 
 class FileStore implements StoreInterface
 {
-    /*** @var string */
+    /** @var string */
     protected $dir;
 
     /**
@@ -15,7 +15,8 @@ class FileStore implements StoreInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param string $id
+     * @return bool|mixed
      */
     public function fetch($id)
     {
@@ -37,28 +38,36 @@ class FileStore implements StoreInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param string $id
+     * @param mixed $data
+     * @param int $lifeTime
+     * @return int
      */
     public function save($id, $data, $lifeTime)
     {
         $fileName = $this->getFileName($id);
 
         $expirationTime = time() + $lifeTime;
-        $content = $expirationTime.'|'.serialize($data);
+        $content = $expirationTime . '|' . serialize($data);
 
         return file_put_contents($fileName, $content);
     }
 
     /**
-     * {@inheritdoc}
+     * @param string $id
+     * @return bool
      */
     public function delete($id)
     {
         return unlink($this->getFileName($id));
     }
 
+    /**
+     * @param string $id
+     * @return string
+     */
     protected function getFileName($id)
     {
-        return $this->dir.DIRECTORY_SEPARATOR.$id.'.sess';
+        return $this->dir . DIRECTORY_SEPARATOR . $id . '.sess';
     }
 }
