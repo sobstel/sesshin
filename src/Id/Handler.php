@@ -28,7 +28,7 @@ class Handler
     }
 
     /**
-     * @return StoreInterfaceStoreInterface
+     * @return StoreInterface
      */
     public function getIdStore()
     {
