@@ -23,6 +23,13 @@ class Cookie implements StoreInterface
     /** @var bool */
     private $httpOnly;
 
+	/**
+     * @param string $name
+     * @param string $path
+     * @param string|null $domain
+     * @param bool $secure
+     * @param bool $httpOnly
+     */
     public function __construct($name = 'sid', $path = '/', $domain = null, $secure = false, $httpOnly = true)
     {
         $this->name = $name;
@@ -32,8 +39,8 @@ class Cookie implements StoreInterface
         $this->httpOnly = $httpOnly;
     }
 
-    /**
-     * {@inheritdoc}
+	/**
+     * @param string $id
      */
     public function setId($id)
     {
@@ -42,8 +49,9 @@ class Cookie implements StoreInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
+	/**
+     * @return string
+     * @throws Exception
      */
     public function getId()
     {
@@ -53,8 +61,8 @@ class Cookie implements StoreInterface
         throw new Exception('Id is not set');
     }
 
-    /**
-     * {@inheritdoc}
+	/**
+     * @return bool
      */
     public function issetId()
     {
@@ -62,7 +70,7 @@ class Cookie implements StoreInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return void
      */
     public function unsetId()
     {

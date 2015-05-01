@@ -224,11 +224,17 @@ class Session implements \ArrayAccess
         return false;
     }
 
+	/**
+     * @param Id\Handler $idHandler
+     */
     public function setIdHandler(Id\Handler $idHandler)
     {
         $this->idHandler = $idHandler;
     }
 
+	/**
+     * @return Id\Handler
+     */
     public function getIdHandler()
     {
         if (!$this->idHandler) {
@@ -238,11 +244,17 @@ class Session implements \ArrayAccess
         return $this->idHandler;
     }
 
+	/**
+     * @param int $limit
+     */
     public function setIdRequestsLimit($limit)
     {
         $this->idRequestsLimit = $limit;
     }
 
+	/**
+     * @param int $ttl
+     */
     public function setIdTtl($ttl)
     {
         $this->idTtl = $ttl;
@@ -272,6 +284,9 @@ class Session implements \ArrayAccess
         return $this->store;
     }
 
+	/**
+     * @param FingerprintGeneratorInterface $fingerprintGenerator
+     */
     public function addFingerprintGenerator(FingerprintGenerator\FingerprintGeneratorInterface $fingerprintGenerator)
     {
         $this->fingerprintGenerators[] = $fingerprintGenerator;
@@ -422,11 +437,20 @@ class Session implements \ArrayAccess
         return (isset($this->values[$namespace]) ? $this->values[$namespace] : array());
     }
 
+	/**
+     * @param string $name
+     * @param string $namespace
+     * @return bool
+     */
     public function issetValue($name, $namespace = self::DEFAULT_NAMESPACE)
     {
         return isset($this->values[$namespace][$name]);
     }
 
+	/**
+     * @param string $name
+     * @param string $namespace
+     */
     public function unsetValue($name, $namespace = self::DEFAULT_NAMESPACE)
     {
         if (isset($this->values[$namespace][$name])) {
@@ -434,6 +458,9 @@ class Session implements \ArrayAccess
         }
     }
 
+	/**
+     * @param string $namespace
+     */
     public function unsetValues($namespace = self::DEFAULT_NAMESPACE)
     {
         if (isset($this->values[$namespace])) {
@@ -441,21 +468,36 @@ class Session implements \ArrayAccess
         }
     }
 
+	/**
+     * @param mixed $offset
+     * @param mixed $value
+     */
     public function offsetSet($offset, $value)
     {
         $this->setValue($offset, $value);
     }
 
+	/**
+     * @param mixed $offset
+     * @return mixed
+     */
     public function offsetGet($offset)
     {
         return $this->getValue($offset);
     }
 
+	/**
+     * @param mixed $offset
+     * @return bool
+     */
     public function offsetExists($offset)
     {
         return $this->issetValue($offset);
     }
 
+	/**
+     * @param mixed $offset
+     */
     public function offsetUnset($offset)
     {
         $this->unsetValue($offset);

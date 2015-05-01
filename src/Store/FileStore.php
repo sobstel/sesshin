@@ -14,8 +14,9 @@ class FileStore implements StoreInterface
         $this->dir = $dir;
     }
 
-    /**
-     * {@inheritdoc}
+	/**
+     * @param string $id
+     * @return bool|mixed
      */
     public function fetch($id)
     {
@@ -36,8 +37,11 @@ class FileStore implements StoreInterface
         return false;
     }
 
-    /**
-     * {@inheritdoc}
+	/**
+     * @param string $id
+     * @param mixed $data
+     * @param int $lifeTime
+     * @return int
      */
     public function save($id, $data, $lifeTime)
     {
@@ -49,14 +53,19 @@ class FileStore implements StoreInterface
         return file_put_contents($fileName, $content);
     }
 
-    /**
-     * {@inheritdoc}
+	/**
+     * @param string $id
+     * @return bool
      */
     public function delete($id)
     {
         return unlink($this->getFileName($id));
     }
 
+	/**
+     * @param string $id
+     * @return string
+     */
     protected function getFileName($id)
     {
         return $this->dir.DIRECTORY_SEPARATOR.$id.'.sess';

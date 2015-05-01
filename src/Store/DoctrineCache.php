@@ -11,29 +11,37 @@ class DoctrineCache implements StoreInterface
     /*** @var Cache */
     protected $cache;
 
+	/**
+     * @param Cache $cache
+     */
     public function __construct(Cache $cache)
     {
         $this->cache = $cache;
     }
 
-    /**
-     * {@inheritdoc}
+	/**
+     * @param string $id
+     * @return mixed
      */
     public function fetch($id)
     {
         return $this->cache->fetch($id);
     }
 
-    /**
-     * {@inheritdoc}
+	/**
+     * @param string $id
+     * @param mixed $data
+     * @param int $lifeTime
+     * @return bool
      */
     public function save($id, $data, $lifeTime)
     {
         return $this->cache->save($id, $data, $lifeTime);
     }
 
-    /**
-     * {@inheritdoc}
+	/**
+     * @param string $id
+     * @return bool
      */
     public function delete($id)
     {

@@ -95,21 +95,33 @@ class Handler
         return $this->getId();
     }
 
+	/**
+     * @param string $id
+     */
     public function setId($id)
     {
         $this->getIdStore()->setId($id);
     }
 
+	/**
+     * @return string
+     */
     public function getId()
     {
         return $this->getIdStore()->getId();
     }
 
+	/**
+     * @return bool
+     */
     public function issetId()
     {
         return $this->getIdStore()->issetId();
     }
 
+	/**
+     * @return void
+     */
     public function unsetId()
     {
         $this->getIdStore()->unsetId();
