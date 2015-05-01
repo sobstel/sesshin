@@ -339,6 +339,7 @@ class Session implements \ArrayAccess
      * It must be called before {@link self::open()}.
      *
      * @param int $ttl
+     * @throws Exception
      */
     public function setTtl($ttl)
     {
