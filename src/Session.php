@@ -31,7 +31,7 @@ class Session implements \ArrayAccess
     /** @var StoreInterface */
     private $store;
 
-    /** @var array Session values */
+    /** @var bool|mixed Session values */
     private $values = array();
 
     /** @var int Specifies the number of seconds after which session will be automatically expired */

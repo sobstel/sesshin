@@ -6,7 +6,7 @@ use League\Event\Event as BaseEvent;
 
 class Event extends BaseEvent
 {
-    /*** @var Session */
+    /** @var Session */
     protected $session;
 
     /**

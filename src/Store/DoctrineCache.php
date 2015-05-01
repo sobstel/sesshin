@@ -8,7 +8,7 @@ use Doctrine\Common\Cache\Cache;
  */
 class DoctrineCache implements StoreInterface
 {
-    /*** @var Cache */
+    /** @var Cache */
     protected $cache;
 
     /**
@@ -21,7 +21,7 @@ class DoctrineCache implements StoreInterface
 
     /**
      * @param string $id
-     * @return mixed
+     * @return bool|mixed
      */
     public function fetch($id)
     {

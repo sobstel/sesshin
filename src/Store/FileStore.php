@@ -3,7 +3,7 @@ namespace Sesshin\Store;
 
 class FileStore implements StoreInterface
 {
-    /*** @var string */
+    /** @var string */
     protected $dir;
 
     /**
