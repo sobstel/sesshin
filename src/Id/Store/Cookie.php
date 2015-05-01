@@ -1,6 +1,8 @@
 <?php
 namespace Sesshin\Id\Store;
 
+use Sesshin\Exception;
+
 class Cookie implements StoreInterface
 {
     /** @var string */
@@ -48,6 +50,7 @@ class Cookie implements StoreInterface
         if ($this->issetId()) {
             return isset($this->id) ? $this->id : $_COOKIE[$this->name];
         }
+        throw new Exception('Id is not set');
     }
 
     /**
