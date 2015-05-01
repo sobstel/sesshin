@@ -1,6 +1,7 @@
 <?php
 namespace Sesshin;
 
+use Sesshin\Id;
 use League\Event\EmitterAwareTrait;
 use Sesshin\FingerprintGenerator\FingerprintGeneratorInterface;
 use Sesshin\Store\StoreInterface;
@@ -12,46 +13,46 @@ class Session implements \ArrayAccess
     const DEFAULT_NAMESPACE = 'default';
     const METADATA_NAMESPACE = '__metadata__';
 
-    /*** @var \Sesshin\Id\Handler */
+    /** @var Id\Handler */
     private $idHandler;
 
-    /*** @var int Number of requests after which id is regeneratd */
+    /** @var int Number of requests after which id is regeneratd */
     private $idRequestsLimit = null;
 
-    /*** @var int Time after id is regenerated */
+    /** @var int Time after id is regenerated */
     private $idTtl = 1440;
 
-    /*** @var bool */
+    /** @var bool */
     private $idRegenerated;
 
-    /*** @var int */
+    /** @var int */
     private $regenerationTrace;
 
-    /*** @var StoreInterface */
+    /** @var StoreInterface */
     private $store;
 
-    /*** @var array Session values */
+    /** @var array Session values */
     private $values = array();
 
-    /*** @var int Specifies the number of seconds after which session will be automatically expired */
+    /** @var int Specifies the number of seconds after which session will be automatically expired */
     private $ttl = 1440;
 
-    /*** @var int First trace (timestamp), time when session was created */
+    /** @var int First trace (timestamp), time when session was created */
     private $firstTrace;
 
-    /*** @var int Last trace (Unix timestamp) */
+    /** @var int Last trace (Unix timestamp) */
     private $lastTrace;
 
-    /*** @var int */
+    /** @var int */
     private $requestsCount;
 
-    /*** @var FingerprintGeneratorInterface[] */
+    /** @var FingerprintGeneratorInterface[] */
     private $fingerprintGenerators = array();
 
-    /*** @var string */
+    /** @var string */
     private $fingerprint = '';
 
-    /*** @var bool Is session opened? */
+    /** @var bool Is session opened? */
     private $opened = false;
 
     /**
