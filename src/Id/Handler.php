@@ -95,7 +95,7 @@ class Handler
         return $this->getId();
     }
 
-	/**
+    /**
      * @param string $id
      */
     public function setId($id)
@@ -103,7 +103,7 @@ class Handler
         $this->getIdStore()->setId($id);
     }
 
-	/**
+    /**
      * @return string
      */
     public function getId()
@@ -111,7 +111,7 @@ class Handler
         return $this->getIdStore()->getId();
     }
 
-	/**
+    /**
      * @return bool
      */
     public function issetId()
@@ -119,7 +119,7 @@ class Handler
         return $this->getIdStore()->issetId();
     }
 
-	/**
+    /**
      * @return void
      */
     public function unsetId()

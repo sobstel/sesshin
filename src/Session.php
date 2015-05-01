@@ -224,7 +224,7 @@ class Session implements \ArrayAccess
         return false;
     }
 
-	/**
+    /**
      * @param Id\Handler $idHandler
      */
     public function setIdHandler(Id\Handler $idHandler)
@@ -232,7 +232,7 @@ class Session implements \ArrayAccess
         $this->idHandler = $idHandler;
     }
 
-	/**
+    /**
      * @return Id\Handler
      */
     public function getIdHandler()
@@ -244,7 +244,7 @@ class Session implements \ArrayAccess
         return $this->idHandler;
     }
 
-	/**
+    /**
      * @param int $limit
      */
     public function setIdRequestsLimit($limit)
@@ -252,7 +252,7 @@ class Session implements \ArrayAccess
         $this->idRequestsLimit = $limit;
     }
 
-	/**
+    /**
      * @param int $ttl
      */
     public function setIdTtl($ttl)
@@ -284,7 +284,7 @@ class Session implements \ArrayAccess
         return $this->store;
     }
 
-	/**
+    /**
      * @param FingerprintGeneratorInterface $fingerprintGenerator
      */
     public function addFingerprintGenerator(FingerprintGenerator\FingerprintGeneratorInterface $fingerprintGenerator)
@@ -437,7 +437,7 @@ class Session implements \ArrayAccess
         return (isset($this->values[$namespace]) ? $this->values[$namespace] : array());
     }
 
-	/**
+    /**
      * @param string $name
      * @param string $namespace
      * @return bool
@@ -447,7 +447,7 @@ class Session implements \ArrayAccess
         return isset($this->values[$namespace][$name]);
     }
 
-	/**
+    /**
      * @param string $name
      * @param string $namespace
      */
@@ -458,7 +458,7 @@ class Session implements \ArrayAccess
         }
     }
 
-	/**
+    /**
      * @param string $namespace
      */
     public function unsetValues($namespace = self::DEFAULT_NAMESPACE)
@@ -468,7 +468,7 @@ class Session implements \ArrayAccess
         }
     }
 
-	/**
+    /**
      * @param mixed $offset
      * @param mixed $value
      */
@@ -477,7 +477,7 @@ class Session implements \ArrayAccess
         $this->setValue($offset, $value);
     }
 
-	/**
+    /**
      * @param mixed $offset
      * @return mixed
      */
@@ -486,7 +486,7 @@ class Session implements \ArrayAccess
         return $this->getValue($offset);
     }
 
-	/**
+    /**
      * @param mixed $offset
      * @return bool
      */
@@ -495,7 +495,7 @@ class Session implements \ArrayAccess
         return $this->issetValue($offset);
     }
 
-	/**
+    /**
      * @param mixed $offset
      */
     public function offsetUnset($offset)
@@ -540,11 +540,11 @@ class Session implements \ArrayAccess
         $values = $this->values;
 
         $values[self::METADATA_NAMESPACE] = [
-          'firstTrace' => $this->getFirstTrace(),
-          'lastTrace' => $this->getLastTrace(),
-          'regenerationTrace' => $this->getRegenerationTrace(),
-          'requestsCount' => $this->getRequestsCount(),
-          'fingerprint' => $this->getFingerprint(),
+            'firstTrace' => $this->getFirstTrace(),
+            'lastTrace' => $this->getLastTrace(),
+            'regenerationTrace' => $this->getRegenerationTrace(),
+            'requestsCount' => $this->getRequestsCount(),
+            'fingerprint' => $this->getFingerprint(),
         ];
 
         return $this->getStore()->save($this->getId(), $values, $this->ttl);

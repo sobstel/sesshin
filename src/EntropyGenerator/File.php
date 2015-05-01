@@ -8,7 +8,7 @@ class File implements EntropyGeneratorInterface
     private $file;
     private $length;
 
-	/**
+    /**
      * @param string $file
      * @param int $length
      */
@@ -18,7 +18,7 @@ class File implements EntropyGeneratorInterface
         $this->length = $length;
     }
 
-	/**
+    /**
      * @return string
      * @throws Exception
      */

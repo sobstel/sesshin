@@ -23,7 +23,7 @@ class Cookie implements StoreInterface
     /** @var bool */
     private $httpOnly;
 
-	/**
+    /**
      * @param string $name
      * @param string $path
      * @param string|null $domain
@@ -39,7 +39,7 @@ class Cookie implements StoreInterface
         $this->httpOnly = $httpOnly;
     }
 
-	/**
+    /**
      * @param string $id
      */
     public function setId($id)
@@ -49,7 +49,7 @@ class Cookie implements StoreInterface
         }
     }
 
-	/**
+    /**
      * @return string
      * @throws Exception
      */
@@ -61,7 +61,7 @@ class Cookie implements StoreInterface
         throw new Exception('Id is not set');
     }
 
-	/**
+    /**
      * @return bool
      */
     public function issetId()

@@ -14,7 +14,7 @@ class FileStore implements StoreInterface
         $this->dir = $dir;
     }
 
-	/**
+    /**
      * @param string $id
      * @return bool|mixed
      */
@@ -37,7 +37,7 @@ class FileStore implements StoreInterface
         return false;
     }
 
-	/**
+    /**
      * @param string $id
      * @param mixed $data
      * @param int $lifeTime
@@ -48,12 +48,12 @@ class FileStore implements StoreInterface
         $fileName = $this->getFileName($id);
 
         $expirationTime = time() + $lifeTime;
-        $content = $expirationTime.'|'.serialize($data);
+        $content = $expirationTime . '|' . serialize($data);
 
         return file_put_contents($fileName, $content);
     }
 
-	/**
+    /**
      * @param string $id
      * @return bool
      */
@@ -62,12 +62,12 @@ class FileStore implements StoreInterface
         return unlink($this->getFileName($id));
     }
 
-	/**
+    /**
      * @param string $id
      * @return string
      */
     protected function getFileName($id)
     {
-        return $this->dir.DIRECTORY_SEPARATOR.$id.'.sess';
+        return $this->dir . DIRECTORY_SEPARATOR . $id . '.sess';
     }
 }

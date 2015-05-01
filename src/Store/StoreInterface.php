@@ -11,7 +11,7 @@ interface StoreInterface
 
     /**
      * @param string $id
-     * @param mixed  $data
+     * @param mixed $data
      * @param int $lifeTime
      */
     public function save($id, $data, $lifeTime);

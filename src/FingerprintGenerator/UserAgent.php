@@ -3,7 +3,7 @@ namespace Sesshin\FingerprintGenerator;
 
 class UserAgent implements FingerprintGeneratorInterface
 {
-	/**
+    /**
      * @return string
      */
     public function generate()

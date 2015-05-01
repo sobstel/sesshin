@@ -11,7 +11,7 @@ class DoctrineCache implements StoreInterface
     /*** @var Cache */
     protected $cache;
 
-	/**
+    /**
      * @param Cache $cache
      */
     public function __construct(Cache $cache)
@@ -19,7 +19,7 @@ class DoctrineCache implements StoreInterface
         $this->cache = $cache;
     }
 
-	/**
+    /**
      * @param string $id
      * @return mixed
      */
@@ -28,7 +28,7 @@ class DoctrineCache implements StoreInterface
         return $this->cache->fetch($id);
     }
 
-	/**
+    /**
      * @param string $id
      * @param mixed $data
      * @param int $lifeTime
@@ -39,7 +39,7 @@ class DoctrineCache implements StoreInterface
         return $this->cache->save($id, $data, $lifeTime);
     }
 
-	/**
+    /**
      * @param string $id
      * @return bool
      */
