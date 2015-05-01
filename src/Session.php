@@ -510,7 +510,8 @@ class Session implements \ArrayAccess
      */
     protected function load()
     {
-        $values = $this->getStore()->fetch($this->getId());
+        $id = $this->getId();
+        $values = $this->getStore()->fetch($id);
 
         if ($values === false) {
             return false;

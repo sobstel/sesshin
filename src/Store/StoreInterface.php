@@ -5,7 +5,7 @@ interface StoreInterface
 {
     /**
      * @param string $id
-     * @return mixed
+     * @return array
      */
     public function fetch($id);
 
