@@ -109,6 +109,6 @@ class Handler
 
     public function unsetId()
     {
-        return $this->getIdStore()->unsetId();
+        $this->getIdStore()->unsetId();
     }
 }
