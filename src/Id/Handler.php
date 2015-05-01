@@ -1,7 +1,7 @@
 <?php
 namespace Sesshin\Id;
 
-use Sesshin\League\EntropyGenerator;
+use Sesshin\EntropyGenerator\EntropyGeneratorInterface;
 use Sesshin\Id\Store\StoreInterface;
 use Sesshin\Id\Store\Cookie as CookieStore;
 
@@ -13,7 +13,7 @@ class Handler
     /** @var StoreInterface */
     private $idStore;
 
-    /** @var \Sesshin\EntropyGenerator\EntropyGeneratorInterface */
+    /** @var EntropyGeneratorInterface */
     private $entropyGenerator;
 
     /** @var string Hash algo used to generate session ID (it hashes entropy). */
@@ -42,15 +42,15 @@ class Handler
     /**
      * Sets entropy that is used to generate session id.
      *
-     * @param \Sesshin\EntropyGenerator\EntropyGeneratorInterface $entropyGenerator
+     * @param EntropyGeneratorInterface $entropyGenerator
      */
-    public function setEntropyGenerator(EntropyGenerator\EntropyGeneratorInterface $entropyGenerator)
+    public function setEntropyGenerator(EntropyGeneratorInterface $entropyGenerator)
     {
         $this->entropyGenerator = $entropyGenerator;
     }
 
     /**
-     * @return \Sesshin\EntropyGenerator\EntropyGeneratorInterface
+     * @return EntropyGeneratorInterface
      */
     public function getEntropyGenerator()
     {
