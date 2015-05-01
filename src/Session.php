@@ -26,7 +26,7 @@ class Session implements \ArrayAccess
     /*** @var int */
     private $regenerationTrace;
 
-    /*** @var Store */
+    /*** @var StoreInterface */
     private $store;
 
     /*** @var array Session values */
@@ -54,7 +54,7 @@ class Session implements \ArrayAccess
     private $opened = false;
 
     /**
-     * Constructor
+     * @param StoreInterface $store
      */
     public function __construct(StoreInterface $store)
     {
