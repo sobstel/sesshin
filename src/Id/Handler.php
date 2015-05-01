@@ -3,6 +3,7 @@ namespace Sesshin\Id;
 
 use Sesshin\EntropyGenerator\EntropyGeneratorInterface;
 use Sesshin\EntropyGenerator\Uniq;
+use Sesshin\Exception;
 use Sesshin\Id\Store\StoreInterface;
 use Sesshin\Id\Store\Cookie as CookieStore;
 
