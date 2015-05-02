@@ -1,6 +1,8 @@
 <?php
 namespace Sesshin\Id\Store;
 
+use Sesshin\Exception;
+
 class Cookie implements StoreInterface
 {
     /** @var string */
@@ -21,6 +23,13 @@ class Cookie implements StoreInterface
     /** @var bool */
     private $httpOnly;
 
+    /**
+     * @param string $name
+     * @param string $path
+     * @param string|null $domain
+     * @param bool $secure
+     * @param bool $httpOnly
+     */
     public function __construct($name = 'sid', $path = '/', $domain = null, $secure = false, $httpOnly = true)
     {
         $this->name = $name;
@@ -31,7 +40,7 @@ class Cookie implements StoreInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param string $id
      */
     public function setId($id)
     {
@@ -41,17 +50,19 @@ class Cookie implements StoreInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
+     * @throws Exception
      */
     public function getId()
     {
         if ($this->issetId()) {
             return isset($this->id) ? $this->id : $_COOKIE[$this->name];
         }
+        throw new Exception('Id is not set');
     }
 
     /**
-     * {@inheritdoc}
+     * @return bool
      */
     public function issetId()
     {
@@ -59,7 +70,7 @@ class Cookie implements StoreInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return void
      */
     public function unsetId()
     {

@@ -1,7 +1,9 @@
 <?php
 namespace Sesshin;
 
+use Sesshin\Id;
 use League\Event\EmitterAwareTrait;
+use Sesshin\FingerprintGenerator\FingerprintGeneratorInterface;
 use Sesshin\Store\StoreInterface;
 
 class Session implements \ArrayAccess
@@ -11,50 +13,50 @@ class Session implements \ArrayAccess
     const DEFAULT_NAMESPACE = 'default';
     const METADATA_NAMESPACE = '__metadata__';
 
-    /*** @var \Sesshin\Id\Handler */
+    /** @var Id\Handler */
     private $idHandler;
 
-    /*** @var int Number of requests after which id is regeneratd */
+    /** @var int Number of requests after which id is regeneratd */
     private $idRequestsLimit = null;
 
-    /*** @var int Time after id is regenerated */
+    /** @var int Time after id is regenerated */
     private $idTtl = 1440;
 
-    /*** @var bool */
+    /** @var bool */
     private $idRegenerated;
 
-    /*** @var int */
+    /** @var int */
     private $regenerationTrace;
 
-    /*** @var Store */
+    /** @var StoreInterface */
     private $store;
 
-    /*** @var array Session values */
+    /** @var bool|mixed Session values */
     private $values = array();
 
-    /*** @var int Specifies the number of seconds after which session will be automatically expired */
+    /** @var int Specifies the number of seconds after which session will be automatically expired */
     private $ttl = 1440;
 
-    /*** @var int First trace (timestamp), time when session was created */
+    /** @var int First trace (timestamp), time when session was created */
     private $firstTrace;
 
-    /*** @var int Last trace (Unix timestamp) */
+    /** @var int Last trace (Unix timestamp) */
     private $lastTrace;
 
-    /*** @var int */
+    /** @var int */
     private $requestsCount;
 
-    /*** @var array of \Sesshin\FingerprintGenerator\FingerprintGeneratorInterface */
+    /** @var FingerprintGeneratorInterface[] */
     private $fingerprintGenerators = array();
 
-    /*** @var string */
+    /** @var string */
     private $fingerprint = '';
 
-    /*** @var bool Is session opened? */
+    /** @var bool Is session opened? */
     private $opened = false;
 
     /**
-     * Constructor
+     * @param StoreInterface $store
      */
     public function __construct(StoreInterface $store)
     {
@@ -102,7 +104,7 @@ class Session implements \ArrayAccess
      *
      * If called earlier, then second (and next ones) call does nothing
      *
-     * @param bool Create new session if not exists earlier?
+     * @param bool $createNewIfNotExists Create new session if not exists earlier?
      * @return bool Session opened?
      */
     public function open($createNewIfNotExists = false)
@@ -222,11 +224,17 @@ class Session implements \ArrayAccess
         return false;
     }
 
+    /**
+     * @param Id\Handler $idHandler
+     */
     public function setIdHandler(Id\Handler $idHandler)
     {
         $this->idHandler = $idHandler;
     }
 
+    /**
+     * @return Id\Handler
+     */
     public function getIdHandler()
     {
         if (!$this->idHandler) {
@@ -236,11 +244,17 @@ class Session implements \ArrayAccess
         return $this->idHandler;
     }
 
+    /**
+     * @param int $limit
+     */
     public function setIdRequestsLimit($limit)
     {
         $this->idRequestsLimit = $limit;
     }
 
+    /**
+     * @param int $ttl
+     */
     public function setIdTtl($ttl)
     {
         $this->idTtl = $ttl;
@@ -270,6 +284,9 @@ class Session implements \ArrayAccess
         return $this->store;
     }
 
+    /**
+     * @param FingerprintGeneratorInterface $fingerprintGenerator
+     */
     public function addFingerprintGenerator(FingerprintGenerator\FingerprintGeneratorInterface $fingerprintGenerator)
     {
         $this->fingerprintGenerators[] = $fingerprintGenerator;
@@ -339,6 +356,7 @@ class Session implements \ArrayAccess
      * It must be called before {@link self::open()}.
      *
      * @param int $ttl
+     * @throws Exception
      */
     public function setTtl($ttl)
     {
@@ -419,11 +437,20 @@ class Session implements \ArrayAccess
         return (isset($this->values[$namespace]) ? $this->values[$namespace] : array());
     }
 
+    /**
+     * @param string $name
+     * @param string $namespace
+     * @return bool
+     */
     public function issetValue($name, $namespace = self::DEFAULT_NAMESPACE)
     {
         return isset($this->values[$namespace][$name]);
     }
 
+    /**
+     * @param string $name
+     * @param string $namespace
+     */
     public function unsetValue($name, $namespace = self::DEFAULT_NAMESPACE)
     {
         if (isset($this->values[$namespace][$name])) {
@@ -431,6 +458,9 @@ class Session implements \ArrayAccess
         }
     }
 
+    /**
+     * @param string $namespace
+     */
     public function unsetValues($namespace = self::DEFAULT_NAMESPACE)
     {
         if (isset($this->values[$namespace])) {
@@ -438,21 +468,36 @@ class Session implements \ArrayAccess
         }
     }
 
+    /**
+     * @param mixed $offset
+     * @param mixed $value
+     */
     public function offsetSet($offset, $value)
     {
         $this->setValue($offset, $value);
     }
 
+    /**
+     * @param mixed $offset
+     * @return mixed
+     */
     public function offsetGet($offset)
     {
         return $this->getValue($offset);
     }
 
+    /**
+     * @param mixed $offset
+     * @return bool
+     */
     public function offsetExists($offset)
     {
         return $this->issetValue($offset);
     }
 
+    /**
+     * @param mixed $offset
+     */
     public function offsetUnset($offset)
     {
         $this->unsetValue($offset);
@@ -465,7 +510,8 @@ class Session implements \ArrayAccess
      */
     protected function load()
     {
-        $values = $this->getStore()->fetch($this->getId());
+        $id = $this->getId();
+        $values = $this->getStore()->fetch($id);
 
         if ($values === false) {
             return false;
@@ -495,11 +541,11 @@ class Session implements \ArrayAccess
         $values = $this->values;
 
         $values[self::METADATA_NAMESPACE] = [
-          'firstTrace' => $this->getFirstTrace(),
-          'lastTrace' => $this->getLastTrace(),
-          'regenerationTrace' => $this->getRegenerationTrace(),
-          'requestsCount' => $this->getRequestsCount(),
-          'fingerprint' => $this->getFingerprint(),
+            'firstTrace' => $this->getFirstTrace(),
+            'lastTrace' => $this->getLastTrace(),
+            'regenerationTrace' => $this->getRegenerationTrace(),
+            'requestsCount' => $this->getRequestsCount(),
+            'fingerprint' => $this->getFingerprint(),
         ];
 
         return $this->getStore()->save($this->getId(), $values, $this->ttl);
