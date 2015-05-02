@@ -287,7 +287,7 @@ class Session implements \ArrayAccess
     /**
      * @param FingerprintGeneratorInterface $fingerprintGenerator
      */
-    public function addFingerprintGenerator(FingerprintGenerator\FingerprintGeneratorInterface $fingerprintGenerator)
+    public function addFingerprintGenerator(FingerprintGeneratorInterface $fingerprintGenerator)
     {
         $this->fingerprintGenerators[] = $fingerprintGenerator;
     }

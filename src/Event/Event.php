@@ -10,8 +10,8 @@ class Event extends BaseEvent
     protected $session;
 
     /**
-     * @param string $name
      * @param Session $session
+     * @param string $name
      */
     public function __construct(Session $session, $name = null)
     {
