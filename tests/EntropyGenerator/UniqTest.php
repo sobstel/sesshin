@@ -3,7 +3,7 @@ namespace Sesshin\Tests\EntropyGenerator;
 
 use Sesshin\EntropyGenerator\Uniq;
 
-class UniqTest extends \PHPUnit_Framework_TestCase
+class UniqTest extends \PHPUnit\Framework\TestCase
 {
     public function testGeneratesUniqueId()
     {
