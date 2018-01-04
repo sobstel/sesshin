@@ -1,7 +1,7 @@
 <?php
 namespace Sesshin\Id;
 
-use Sesshin\League\EntropyGenerator;
+use Sesshin\EntropyGenerator;
 use Sesshin\Id\Store\StoreInterface;
 use Sesshin\Id\Store\Cookie as CookieStore;
 
