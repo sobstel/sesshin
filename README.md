@@ -4,7 +4,7 @@ Object-oriented, extendable advanced session handling component written with
 security in mind that mitigates attacks like Session Hijacking, Session Fixation,
 Session Exposure, Sesion Poisoning, Session Prediction.
 
-One of previous versions of this lib has been awarded 1st place in
+Awarded 1st place in
 [php.pl contest](http://wortal.php.pl/phppl/Wortal/Spolecznosc/Konkursy/Konkurs-Pozyteczne-i-praktyczne-biblioteki-Wyniki).
 
 Features:
@@ -15,17 +15,13 @@ Features:
 * sends cookie only when session really created
 * session id rotation (anti session hijacking), based on time and/or number of
   requests
-* support for user-defined stores
-* support for user-defined listeners (observers)
-* support for user-defined entropy callback
-* support for own fingerprint generators, e.g. user agent,
-* unlike PHP native mechanism, you don't have to use cron or resourse-consuming
+* configurable:
+* unlike PHP native mechanism, you don't have to use cron or resource-consuming
   100% garbage collecting probability to ensure sessions are removed exactly
   after specified time
-* convention over configuration (has defined default listener, store, entropy
-  generator, fingerprint generator and ID store)
+* convention over configuration - possible to configure user-defined stores, listeners (observers),
+  entropy callback and fingerprint generators, but all of them have defaults set out-of-the-box
 * 100% independent from insecure native PHP session extension
-* and some more...
 
 [![Build Status](https://travis-ci.org/sobstel/sesshin.png?branch=master)](https://travis-ci.org/sobstel/sesshin)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/sobstel/sesshin/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/sobstel/sesshin/?branch=master)
@@ -34,7 +30,9 @@ Features:
 
 ### Installation
 
-Use composer: https://packagist.org/packages/sobstel/sesshinq
+```
+composer require sobstel/sesshin
+```
 
 ### Create new session
 

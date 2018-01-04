@@ -3,7 +3,7 @@ namespace Sesshin\Tests\EntropyGenerator;
 
 use Sesshin\EntropyGenerator\File;
 
-class FileTest extends \PHPUnit_Framework_TestCase
+class FileTest extends \PHPUnit\Framework\TestCase
 {
     public function testUsesUrandomFileByDefault()
     {

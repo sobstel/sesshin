@@ -4,7 +4,7 @@ namespace Sesshin\EntropyGenerator;
 class Uniq implements EntropyGeneratorInterface
 {
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function generate()
     {

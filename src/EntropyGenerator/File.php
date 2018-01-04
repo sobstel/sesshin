@@ -8,6 +8,10 @@ class File implements EntropyGeneratorInterface
     private $file;
     private $length;
 
+    /**
+     * @param string $file
+     * @param int $length
+     */
     public function __construct($file = '/dev/urandom', $length = 512)
     {
         $this->file = $file;
@@ -15,7 +19,8 @@ class File implements EntropyGeneratorInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
+     * @throws Exception
      */
     public function generate()
     {

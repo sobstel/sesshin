@@ -3,12 +3,26 @@ namespace Sesshin\FingerprintGenerator;
 
 class UserAgent implements FingerprintGeneratorInterface
 {
+    /** @var string */
+    private $userAgent;
+
     /**
-     * {@inheritdoc}
+     * @param string $userAgent
+     */
+    public function __construct($userAgent = null)
+    {
+        if ($userAgent !== null) {
+            $userAgent = (isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '');
+        }
+
+        $this->userAgent = $userAgent;
+    }
+
+    /**
+     * @return string
      */
     public function generate()
     {
-        $userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
-        return sha1($userAgent);
+        return sha1($this->userAgent);
     }
 }
