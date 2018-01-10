@@ -32,12 +32,6 @@
          */
         private $msg_id;
 
-        /**
-         * Property with flash data
-         *
-         * @var array
-         */
-        private $flash_data = [];
 
         /**
          * key name to save the flash dat
@@ -66,7 +60,7 @@
         {
             $current_save_data = $this->getCurrentData($type);
 
-            $current_save_data[$type] = $value;
+            $current_save_data[$type][] = $value;
 
             $this->session->setValue($this->key_name, $current_save_data);
         }
@@ -74,18 +68,27 @@
         /**
          * Get a value in the flash session.
          *
-         * @param string $type
+         * @param string $types
          * @return mixed
          */
-        function get($type = 'n')
+        function get($types = 'n')
         {
-            // get the current data.
-            $current_data = $this->getCurrentData($type);
+            // get and unset current data.
+            $current_data = $this->session->getUnsetValue($this->key_name);
 
-            // eliminate after obtaining the data.
-            //$this->session->unsetValue($this->key_name);
+            if (is_array($types)) {
 
-            return $current_data;
+                $new_data   = $current_data;
+                unset($current_data);
+
+                foreach ($types as $type) {
+                    $current_data[$type] = $new_data[$type];
+                }
+
+                return $current_data;
+            }
+
+            return $current_data[$types];
         }
 
         /**
@@ -109,7 +112,7 @@
         {
             $current_data = $this->session->getValue($this->key_name);
 
-            return isset($current_data[$type]) ? $current_data[$type] : $current_data[$type] = array();
+            return isset($current_data) ? $current_data : $current_data = array();
         }
 
         /**

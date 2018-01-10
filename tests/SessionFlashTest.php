@@ -3,7 +3,6 @@
     namespace Sesshin\Tests;
 
     use Sesshin\Session;
-    use Sesshin\SessionFlash;
     use Sesshin\Store\FileStore;
 
     class SessionFlashTest extends \PHPUnit\Framework\TestCase
@@ -34,20 +33,9 @@
             $this->assertTrue(true);
         }
 
-
-        function testAddFlashDataOfASpecificType()
-        {
-            $this->session->flash()->add('Hello type 1','errors');
-            $this->session->flash()->add('Hello type 2','success');
-
-            $this->assertTrue(true);
-        }
-
         function testGetTheFlashDataAdded()
         {
             $key1_value = $this->session->flash()->get();
-
-            var_dump($key1_value);
 
             $this->assertEquals('Hello Hello1',$key1_value[0]);
             $this->assertEquals('Hello Hello2',$key1_value[1]);
@@ -55,7 +43,19 @@
         }
 
 
-        function testTheFlashDataWasObtainedCanNotExist()
+        function testAddFlashDataOfASpecificType()
+        {
+            $this->session->flash()->add('Hello type 1','errors');
+            $this->session->flash()->add('Hello type 2','success');
+
+            $data = $this->session->flash()->get(['errors','success']);
+
+            $this->assertEquals('Hello type 1',$data['errors'][0]);
+            $this->assertEquals('Hello type 2',$data['success'][0]);
+        }
+
+
+        function testAfterTheRequestTheFlashDataIsDeleted()
         {
             $key1_value = $this->session->flash()->get();
 
