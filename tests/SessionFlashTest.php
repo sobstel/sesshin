@@ -18,47 +18,18 @@
         }
 
 
-        function getSession()
+        function testSavingAndObtainingDataFromFlash()
         {
-            return new Session(new FileStore($this->temp_dir));
+            $this->session->flash()->set('key1','Hello Hello1');
+            $this->session->flash()->set('key2','Hello Hello2');
+
+            $this->assertEquals('Hello Hello1',$this->session->flash()->get('key1'));
+            $this->assertEquals('Hello Hello2',$this->session->flash()->get('key2'));
         }
 
 
-        function testAddFlashData()
-        {
-            $this->session->flash()->add('Hello Hello1');
-            $this->session->flash()->add('Hello Hello2');
-            $this->session->flash()->add('Hello Hello3');
-
-            $this->assertTrue(true);
+        function testMovementFromNewDataToOldData(){
+            $this->assertEmpty($this->session->flash()->get('key1'));
         }
 
-        function testGetTheFlashDataAdded()
-        {
-            $key1_value = $this->session->flash()->get();
-
-            $this->assertEquals('Hello Hello1',$key1_value[0]);
-            $this->assertEquals('Hello Hello2',$key1_value[1]);
-            $this->assertEquals('Hello Hello3',$key1_value[2]);
-        }
-
-
-        function testAddFlashDataOfASpecificType()
-        {
-            $this->session->flash()->add('Hello type 1','errors');
-            $this->session->flash()->add('Hello type 2','success');
-
-            $data = $this->session->flash()->get(['errors','success']);
-
-            $this->assertEquals('Hello type 1',$data['errors'][0]);
-            $this->assertEquals('Hello type 2',$data['success'][0]);
-        }
-
-
-        function testAfterTheRequestTheFlashDataIsDeleted()
-        {
-            $key1_value = $this->session->flash()->get();
-
-            $this->assertNull($key1_value,'the data was obtained and eliminate');
-        }
     }

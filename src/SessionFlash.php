@@ -38,7 +38,7 @@
          *
          * @var string
          */
-        protected $key_name = 'flash_data';
+        protected $key_name = '_flash';
 
         /**
          * SessionFlash constructor.
@@ -162,10 +162,12 @@
          */
         protected function removeFromOldFlashData(array $keys)
         {
-            $this->session->setValue(
-                $this->key_name.'.old',
-                array_diff($this->session->getValue($this->key_name.'.old'), $keys)
-            );
+            $old_data = $this->session->getValue($this->key_name.'.old');
+
+            if (! is_array($old_data)) {
+                $old_data = array();
+            }
+            $this->session->setValue($this->key_name.'.old', array_diff($old_data, $keys));
         }
 
         /**
@@ -175,8 +177,11 @@
          */
         public function ageFlashData()
         {
-            $this->session->unsetValue($this->session->getValue($this->key_name.'.old'));
-            $this->session->forget($this->session->getValue($this->key_name.'.old'));
+            $old_data = $this->session->getValue($this->key_name.'.old');
+            if (! is_array($old_data)) {
+                $old_data = array();
+            }
+            $this->session->forget($old_data);
             $this->session->put($this->key_name.'.old', $this->session->getValue($this->key_name.'.new'));
             $this->session->put($this->key_name.'.new', []);
         }
