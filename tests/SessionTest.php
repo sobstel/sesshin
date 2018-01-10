@@ -393,7 +393,7 @@ class SessionTest extends TestCase
 
         $session->open();
 
-        $this->assertSame(true, $session->isOpened());
+        $this->assertSame(false, $session->isOpened());
         $this->assertEquals($requests_counter + 1, $session->getRequestsCount());
     }
 
@@ -549,4 +549,52 @@ class SessionTest extends TestCase
         $store->expects($this->any())->method('fetch')->will($this->returnValue(false));
         $this->assertFalse($this->invokeMethod($session, 'load'));
     }
+
+
+    function testPutMethodDataForSession()
+    {
+        $store = $this->getStoreMock();
+        $session = $this->setUpDefaultSession(new Session($store));
+        $session->put([
+           'key1'=>'value1',
+           'key2'=>'value2'
+        ]);
+
+        $this->assertEquals('value1', $session->getValue('key1'));
+        $this->assertEquals('value2', $session->getValue('key2'));
+    }
+
+
+    function testPushMethodForArrayData()
+    {
+        $store = $this->getStoreMock();
+        $session = $this->setUpDefaultSession(new Session($store));
+
+        $session->push('users','value1');
+        $session->push('users','value2');
+        $data_users = $session->getValue('users');
+
+        $this->assertEquals('value1', $data_users[0]);
+        $this->assertEquals('value2', $data_users[1]);
+    }
+
+
+    function testForgetDataFromSession()
+    {
+        $store = $this->getStoreMock();
+        $session = $this->setUpDefaultSession(new Session($store));
+        $session->put([
+            'key1'=>'value1',
+            'key2'=>'value2'
+        ]);
+
+        $this->assertEquals('value1', $session->getValue('key1'));
+        $this->assertEquals('value2', $session->getValue('key2'));
+
+        $session->forget(['key1']);
+
+        $this->assertEmpty($session->getValue('key1'));
+
+    }
+
 }

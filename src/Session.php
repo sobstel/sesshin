@@ -541,6 +541,8 @@ class Session implements \ArrayAccess
      */
     protected function save()
     {
+        $this->flash()->ageFlashData();
+
         $values = $this->values;
 
         $values[self::METADATA_NAMESPACE] = [
@@ -554,16 +556,68 @@ class Session implements \ArrayAccess
         return $this->getStore()->save($this->getId(), $values, $this->ttl);
     }
 
+    /**
+     * Put a key / value pair or array of key / value pairs in the session.
+     *
+     * @param  string|array  $key
+     * @param  mixed       $value
+     * @return void
+     */
+    public function put($key, $value = null)
+    {
+        if (! is_array($key)) {
+            $key = [$key => $value];
+        }
+
+        foreach ($key as $arrayKey => $arrayValue) {
+            $this->setValue($arrayKey, $arrayValue);
+        }
+    }
+
+
+    /**
+     * Push a value onto a session array.
+     *
+     * @param  string  $key
+     * @param  mixed   $value
+     * @return void
+     */
+    public function push($key, $value)
+    {
+        $array      = $this->getValue($key);
+        $array[]    = $value;
+        $this->setValue($key, $array);
+    }
+
+    /**
+     * Remove one or many items from the session.
+     *
+     * @param  string|array  $keys
+     * @return void
+     */
+    public function forget($keys)
+    {
+        $remove  = $keys;
+
+        foreach($remove as $key){
+            $this->unsetValue($key);
+        }
+
+    }
+
 
     /**
      * Call the flash session handler.
      *
      * @return SessionFlash
      */
-    function flash()
+    public function flash()
     {
         if (is_null($this->flash)) {
-            return SessionFlash::singleton($this);
+
+            $this->flash = new SessionFlash($this);
+
+            return $this->flash;
 
         } else {
             return $this->flash;

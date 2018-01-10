@@ -45,7 +45,7 @@
          *
          * @param Session $session
          */
-        function __construct(Session $session)
+        public function __construct(Session $session)
         {
             $this->session = $session;
         }
@@ -56,64 +56,141 @@
          * @param $value
          * @param string $type
          */
-        function add($value, $type = 'n')
+        public function add($value, $type = 'n')
         {
-            $current_save_data = $this->getCurrentData($type);
+            $this->session->put($type, $value);
+            $this->session->push($this->key_name.'.new', $type);
+            $this->removeFromOldFlashData([$type]);
+        }
 
-            $current_save_data[$type][] = $value;
 
-            $this->session->setValue($this->key_name, $current_save_data);
+        /**
+         * Add a value in the flash session.
+         *
+         * @param $key
+         * @param $value
+         */
+        public function set($key, $value)
+        {
+            $this->session->put($key, $value);
+            $this->session->push($this->key_name.'.new', $key);
+            $this->removeFromOldFlashData([$key]);
         }
 
         /**
          * Get a value in the flash session.
          *
-         * @param string $types
+         * @param $key
          * @return mixed
          */
-        function get($types = 'n')
+        public function get($key)
         {
-            // get and unset current data.
-            $current_data = $this->session->getUnsetValue($this->key_name);
-
-            if (is_array($types)) {
-
-                $new_data   = $current_data;
-                unset($current_data);
-
-                foreach ($types as $type) {
-                    $current_data[$type] = $new_data[$type];
-                }
-
-                return $current_data;
-            }
-
-            return $current_data[$types];
+            return $this->session->getValue($key);
         }
 
         /**
-         * Determine if there is data of a type.
+         * Determine if exist key in flash data.
          *
-         * @param $type
+         * @param $key
          * @return bool
          */
-        function has($type)
+        public function has($key)
         {
-            return is_null($this->getCurrentData($type)) ? false : true;
+            $current_data = $this->session->getValue($key);
+
+            if (isset($current_data)) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         /**
          * Get all the data or data of a type.
          *
-         * @param string $type
          * @return mixed
          */
-        function getCurrentData($type = 'n')
+        public function getCurrentData()
         {
             $current_data = $this->session->getValue($this->key_name);
 
             return isset($current_data) ? $current_data : $current_data = array();
         }
+
+        /**
+         * Reflash all of the session flash data.
+         *
+         * @return void
+         */
+        public function reflash()
+        {
+            $this->mergeNewFlashes($this->session->getValue($this->key_name.'.old'));
+            $this->session->setValue($this->key_name.'.old', []);
+        }
+
+
+        /**
+         * Reflash a subset of the current flash data.
+         *
+         * @param  array|mixed  $keys
+         * @return void
+         */
+        public function keep($keys = null)
+        {
+            $this->mergeNewFlashes($keys = is_array($keys) ? $keys : func_get_args());
+            $this->removeFromOldFlashData($keys);
+        }
+
+
+        /**
+         * Merge new flash keys into the new flash array.
+         *
+         * @param  array  $keys
+         * @return void
+         */
+        protected function mergeNewFlashes(array $keys)
+        {
+            $values = array_unique(array_merge($this->session->getValue($this->key_name.'.new'), $keys));
+            $this->session->setValue($this->key_name.'.new', $values);
+        }
+
+        /**
+         * Remove the given keys from the old flash data.
+         *
+         * @param  array  $keys
+         * @return void
+         */
+        protected function removeFromOldFlashData(array $keys)
+        {
+            $this->session->setValue(
+                $this->key_name.'.old',
+                array_diff($this->session->getValue($this->key_name.'.old'), $keys)
+            );
+        }
+
+        /**
+         * Age the flash data for the session.
+         *
+         * @return void
+         */
+        public function ageFlashData()
+        {
+            $this->session->unsetValue($this->session->getValue($this->key_name.'.old'));
+            $this->session->forget($this->session->getValue($this->key_name.'.old'));
+            $this->session->put($this->key_name.'.old', $this->session->getValue($this->key_name.'.new'));
+            $this->session->put($this->key_name.'.new', []);
+        }
+
+
+        /**
+         * Clear all data flash.
+         *
+         */
+        public function clear()
+        {
+            $this->session->unsetValue($this->key_name);
+        }
+
 
         /**
          * Calling this class in a singleton way.
@@ -129,6 +206,4 @@
 
             return self::$singleton;
         }
-
-
     }
