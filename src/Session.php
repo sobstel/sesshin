@@ -55,6 +55,9 @@ class Session implements \ArrayAccess
     /** @var bool Is session opened? */
     private $opened = false;
 
+    /** @var SessionFlash */
+    private $flash;
+
     /**
      * @param StoreInterface $store
      */
@@ -211,7 +214,7 @@ class Session implements \ArrayAccess
      */
     public function regenerateId()
     {
-        if (!$this->idRegenerated) {
+        if (! $this->idRegenerated) {
             $this->getStore()->delete($this->getId());
             $this->getIdHandler()->generateId();
 
@@ -237,7 +240,7 @@ class Session implements \ArrayAccess
      */
     public function getIdHandler()
     {
-        if (!$this->idHandler) {
+        if (! $this->idHandler) {
             $this->idHandler = new Id\Handler();
         }
 
@@ -549,5 +552,21 @@ class Session implements \ArrayAccess
         ];
 
         return $this->getStore()->save($this->getId(), $values, $this->ttl);
+    }
+
+
+    /**
+     * Call the flash session handler.
+     *
+     * @return SessionFlash
+     */
+    function flash()
+    {
+        if (is_null($this->flash)) {
+            return SessionFlash::singleton($this);
+
+        } else {
+            return $this->flash;
+        }
     }
 }

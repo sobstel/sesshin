@@ -8,6 +8,7 @@ class SessionTest extends TestCase
 {
     /**
      * @var Sesshin\Session
+     * @return null|Session
      */
     private function setUpDefaultSession($session = null)
     {
@@ -15,13 +16,30 @@ class SessionTest extends TestCase
             $session = new Session($this->getStoreMock());
         }
 
-        $idHandler = $this->createMock('\Sesshin\Id\Handler', array('generateId', 'getId', 'setId', 'issetId', 'unsetId'));
+        $idHandler = $this
+            ->getMockBuilder('\Sesshin\Id\Handler')
+            ->setMethods( array('generateId', 'getId', 'setId', 'issetId', 'unsetId'))
+            ->getMock();
+
         $session->setIdHandler($idHandler);
 
-        $emitter = $this->createMock('\League\Event\Emitter', array('emit', 'addListener'));
+        $emitter = $this
+            ->getMockBuilder('\League\Event\Emitter')
+            ->setMethods(array('emit', 'addListener'))
+            ->getMock();
+
         $session->setEmitter($emitter);
 
         return $session;
+    }
+
+    function getSessionMock(array $methods)
+    {
+        return $this
+                ->getMockBuilder('\Sesshin\Session')
+                ->setConstructorArgs([$this->getStoreMock()])
+                ->setMethods( $methods )
+                ->getMock();
     }
 
     private function getStoreMock()
@@ -226,7 +244,14 @@ class SessionTest extends TestCase
      */
     public function testCreateMethodGeneratesFingerprint()
     {
-        $session = $this->setUpDefaultSession($this->createMock('\Sesshin\Session', array('generateFingerprint'), [$this->getStoreMock()]));
+        $session = $this->setUpDefaultSession(
+            $this
+                ->getMockBuilder('\Sesshin\Session')
+                ->setConstructorArgs([$this->getStoreMock()])
+                ->setMethods( array('generateFingerprint'))
+                ->getMock()
+        );
+
         $session->expects($this->once())->method('generateFingerprint');
         $session->create();
     }
@@ -246,7 +271,7 @@ class SessionTest extends TestCase
      */
     public function testOpenMethodWhenCalledWithTrueThenCreatesNewSessionIfSessionNotExistsAlready()
     {
-        $session = $this->setUpDefaultSession($this->createMock('\Sesshin\Session', array('create'), [$this->getStoreMock()]));
+        $session = $this->setUpDefaultSession($this->getSessionMock(['create']));
         $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(false));
         $session->expects($this->once())->method('create');
 
@@ -258,7 +283,7 @@ class SessionTest extends TestCase
      */
     public function testOpenMethodWhenCalledWithTrueThenDoesNotCreateNewSessionIfSessionIdExistsAlready()
     {
-        $session = $this->setUpDefaultSession($this->createMock('\Sesshin\Session', array('create'), [$this->getStoreMock()]));
+        $session = $this->setUpDefaultSession($this->getSessionMock(['issetId','create']));
         $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(true));
         $session->expects($this->never())->method('create');
 
@@ -281,7 +306,7 @@ class SessionTest extends TestCase
      */
     public function testOpenMethodLoadsSessionDataIfSessionExists()
     {
-        $session = $this->setUpDefaultSession($this->createMock('\Sesshin\Session', array('create', 'load'), [$this->getStoreMock()]));
+        $session = $this->setUpDefaultSession($this->getSessionMock(array('create', 'load','isOpened')));
         $session->expects($this->any())->method('isOpened')->will($this->returnValue(false));
         $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(true));
         $session->expects($this->once())->method('load');
@@ -294,7 +319,7 @@ class SessionTest extends TestCase
      */
     public function testOpenMethodDoesNotLoadSessionDataIfSessionNotExists()
     {
-        $session = $this->setUpDefaultSession($this->createMock('\Sesshin\Session', array('create', 'load'), [$this->getStoreMock()]));
+        $session = $this->setUpDefaultSession($this->getSessionMock(array('isOpened', 'issetId','load')));
         $session->expects($this->any())->method('isOpened')->will($this->returnValue(false));
         $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(false));
         $session->expects($this->never())->method('load');
@@ -307,7 +332,7 @@ class SessionTest extends TestCase
      */
     public function testOpenMethodTriggersSessionNoDataOrExpiredEventIfNoDataPresentAfterLoad()
     {
-        $session = $this->setUpDefaultSession($this->createMock('\Sesshin\Session', array('create', 'load', 'getFirstTrace'), [$this->getStoreMock()]));
+        $session = $this->setUpDefaultSession($this->getSessionMock( array('isOpened', 'issetId', 'getFirstTrace','emit') ));
         $session->expects($this->any())->method('isOpened')->will($this->returnValue(false));
         $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(true));
         $session->expects($this->once())->method('getFirstTrace')->will($this->returnValue(false));
@@ -321,7 +346,7 @@ class SessionTest extends TestCase
      */
     public function testOpenMethodTriggersSessionExpiredEventIfSessionExpired()
     {
-        $session = $this->setUpDefaultSession($this->createMock('\Sesshin\Session', array('create', 'load', 'getFirstTrace', 'isExpired'), [$this->getStoreMock()]));
+        $session = $this->setUpDefaultSession($this->getSessionMock(array('isOpened', 'issetId', 'getFirstTrace', 'isExpired','emit')));
         $session->expects($this->any())->method('isOpened')->will($this->returnValue(false));
         $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(true));
         $session->expects($this->once())->method('getFirstTrace')->will($this->returnValue(time()));
@@ -339,7 +364,7 @@ class SessionTest extends TestCase
      */
     public function testOpenMethodTriggersInvalidFingerprintEventIfLoadedFingerprintInvalid()
     {
-        $session = $this->setUpDefaultSession($this->createMock('\Sesshin\Session', array('create', 'load', 'getFirstTrace', 'isExpired', 'getFingerprint', 'generateFingerprint'), [$this->getStoreMock()]));
+        $session = $this->setUpDefaultSession($this->getSessionMock( array('getSessionMock','issetId', 'load', 'getFirstTrace', 'isExpired', 'getFingerprint', 'generateFingerprint','isOpened')));
         $session->expects($this->any())->method('isOpened')->will($this->returnValue(false));
         $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(true));
         $session->expects($this->once())->method('getFirstTrace')->will($this->returnValue(time()));
@@ -353,11 +378,10 @@ class SessionTest extends TestCase
 
     /**
      * @covers Sesshin\Session::open
-     * @depends testCanGetRequestsCounter
      */
     public function testOpenMethodOpenSessionAndIncrementsRequestsCounter()
     {
-        $session = $this->setUpDefaultSession($this->createMock('\Sesshin\Session', array('create', 'load', 'getFirstTrace', 'isExpired', 'getFingerprint', 'generateFingerprint'), [$this->getStoreMock()]));
+        $session = $this->setUpDefaultSession($this->getSessionMock(array('create','isOpened', 'issetId', 'getFirstTrace', 'isExpired', 'getFingerprint', 'generateFingerprint')));
         $session->expects($this->any())->method('isOpened')->will($this->returnValue(false));
         $session->getIdHandler()->expects($this->any())->method('issetId')->will($this->returnValue(true));
         $session->expects($this->once())->method('getFirstTrace')->will($this->returnValue(time()));
@@ -482,19 +506,19 @@ class SessionTest extends TestCase
      */
     public function testImplementsArrayAccessForSessionValues()
     {
-        $session = $this->createMock('\Sesshin\Session', array('setValue'), [$this->getStoreMock()]);
+        $session = $this->getSessionMock(array('setValue'));
         $session->expects($this->once())->method('setValue')->with($this->equalTo('key'), $this->equalTo('value'));
         $session['key'] = 'value';
 
-        $session = $this->createMock('\Sesshin\Session', array('getValue'), [$this->getStoreMock()]);
+        $session = $this->getSessionMock(array('getValue'));
         $session->expects($this->once())->method('getValue')->with($this->equalTo('key'));
         $session['key'];
 
-        $session = $this->createMock('\Sesshin\Session', array('issetValue'), [$this->getStoreMock()]);
+        $session = $this->getSessionMock(array('issetValue'));
         $session->expects($this->once())->method('issetValue')->with($this->equalTo('key'));
         isset($session['key']);
 
-        $session = $this->createMock('\Sesshin\Session', array('unsetValue'), [$this->getStoreMock()]);
+        $session = $this->getSessionMock(array('unsetValue'));
         $session->expects($this->once())->method('unsetValue')->with($this->equalTo('key'));
         unset($session['key']);
     }
@@ -509,7 +533,9 @@ class SessionTest extends TestCase
         $session = $this->setUpDefaultSession(new Session($store));
 
         $store->expects($this->any())->method('fetch')->with($this->equalTo($session->getId()));
-        $this->invokeMethod($session, 'load');
+        $load_result = $this->invokeMethod($session, 'load');
+
+        $this->assertTrue(true,$load_result);
     }
 
     /**

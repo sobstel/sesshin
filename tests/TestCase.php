@@ -1,7 +1,10 @@
 <?php
-namespace Sesshin\Tests;
 
-class TestCase extends \PHPUnit\Framework\TestCase
+    namespace Sesshin\Tests;
+
+    use PHPUnit\Framework\TestCase as TestCaseBase;
+
+    class TestCase extends TestCaseBase
 {
     public function setPropertyAccessible($object, $propertyName)
     {
