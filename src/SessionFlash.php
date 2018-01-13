@@ -1,10 +1,4 @@
 <?php
-    /**
-     * Created by PhpStorm.
-     * User: yabafinet
-     * Date: 10/01/18
-     * Time: 09:24 AM
-     */
 
     namespace Sesshin;
 
