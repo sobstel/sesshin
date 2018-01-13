@@ -214,7 +214,7 @@ class Session implements \ArrayAccess
      */
     public function regenerateId()
     {
-        if (! $this->idRegenerated) {
+        if (!$this->idRegenerated) {
             $this->getStore()->delete($this->getId());
             $this->getIdHandler()->generateId();
 
@@ -566,7 +566,7 @@ class Session implements \ArrayAccess
     public function put($key, $value = null)
     {
         if (! is_array($key)) {
-            $key = [$key => $value];
+            $key = array($key => $value);
         }
 
         foreach ($key as $arrayKey => $arrayValue) {
@@ -614,13 +614,9 @@ class Session implements \ArrayAccess
     public function flash()
     {
         if (is_null($this->flash)) {
-
             $this->flash = new SessionFlash($this);
-
-            return $this->flash;
-
-        } else {
-            return $this->flash;
         }
+
+        return $this->flash;
     }
 }

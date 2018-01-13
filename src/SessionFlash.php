@@ -98,11 +98,7 @@
         {
             $current_data = $this->session->getValue($key);
 
-            if (isset($current_data)) {
-                return true;
-            } else {
-                return false;
-            }
+            return isset($current_data);
         }
 
         /**
