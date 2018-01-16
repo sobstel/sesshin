@@ -55,6 +55,9 @@ class Session implements \ArrayAccess
     /** @var bool Is session opened? */
     private $opened = false;
 
+    /** @var SessionFlash */
+    private $flash;
+
     /**
      * @param StoreInterface $store
      */
@@ -237,7 +240,7 @@ class Session implements \ArrayAccess
      */
     public function getIdHandler()
     {
-        if (!$this->idHandler) {
+        if (! $this->idHandler) {
             $this->idHandler = new Id\Handler();
         }
 
@@ -538,6 +541,8 @@ class Session implements \ArrayAccess
      */
     protected function save()
     {
+        $this->flash()->ageFlashData();
+
         $values = $this->values;
 
         $values[self::METADATA_NAMESPACE] = [
@@ -549,5 +554,69 @@ class Session implements \ArrayAccess
         ];
 
         return $this->getStore()->save($this->getId(), $values, $this->ttl);
+    }
+
+    /**
+     * Put a key / value pair or array of key / value pairs in the session.
+     *
+     * @param  string|array  $key
+     * @param  mixed       $value
+     * @return void
+     */
+    public function put($key, $value = null)
+    {
+        if (! is_array($key)) {
+            $key = array($key => $value);
+        }
+
+        foreach ($key as $arrayKey => $arrayValue) {
+            $this->setValue($arrayKey, $arrayValue);
+        }
+    }
+
+
+    /**
+     * Push a value onto a session array.
+     *
+     * @param  string  $key
+     * @param  mixed   $value
+     * @return void
+     */
+    public function push($key, $value)
+    {
+        $array      = $this->getValue($key);
+        $array[]    = $value;
+        $this->setValue($key, $array);
+    }
+
+    /**
+     * Remove one or many items from the session.
+     *
+     * @param  string|array  $keys
+     * @return void
+     */
+    public function forget($keys)
+    {
+        $remove  = $keys;
+
+        foreach($remove as $key){
+            $this->unsetValue($key);
+        }
+
+    }
+
+
+    /**
+     * Call the flash session handler.
+     *
+     * @return SessionFlash
+     */
+    public function flash()
+    {
+        if (is_null($this->flash)) {
+            $this->flash = new SessionFlash($this);
+        }
+
+        return $this->flash;
     }
 }
