@@ -92,10 +92,10 @@ $eventEmitter->addListener(Event::INVALID_FINGERPRINT, function(Event $event) {
 ### User session
 
 ```php
-use Sesshin\Session\User;
+use Sesshin\User\Session as UserSession;
 use Sesshin\Store\FileStore;
 
-$userSession = new User(new FileStore('/path/to/dir'));
+$userSession = new UserSession(new FileStore('/path/to/dir'));
 
 $userSession->create();
 $userSession->login(123);
