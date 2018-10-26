@@ -17,9 +17,17 @@ class SessionTest extends TestCase
         }
 
         $idHandler = $this
-            ->getMockBuilder('\Sesshin\Id\Handler')
+            ->getMockBuilder('\Sesshin\Id\Handler')   
             ->setMethods( array('generateId', 'getId', 'setId', 'issetId', 'unsetId'))
             ->getMock();
+        // use also session name for cookie
+        // start my update
+        $idHandler = $this
+            ->getMockBuilder('\Sesshin\Id\Handler')   
+            ->setMethods( array('generateId', 'getId', 'setId', 'issetId', 'unsetId','getusername','Setusername','unserusername'))
+            ->getMock();
+        // end of my update
+        
 
         $session->setIdHandler($idHandler);
 
