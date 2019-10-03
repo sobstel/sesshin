@@ -101,6 +101,9 @@ $userSession->create();
 $userSession->login(123);
 
 if ($userSession->isLogged()) {
+  echo sprintf('User %s is logged', $userSession->getUserId());
+  
+  // Or if you have some kind of UserRepository class, which can be used to fetch user data
   $user = UserRepository::find($userSession->getUserId());
   echo sprintf('User %s is logged', $user->getUsername());
 }
