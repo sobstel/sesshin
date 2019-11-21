@@ -9,19 +9,19 @@ Awarded 1st place in
 
 Features:
 
-* smart session expiry control
-* prevents session adoption, i.e. session ids generated only by the component
+- smart session expiry control
+- prevents session adoption, i.e. session ids generated only by the component
   are acceptable (strict model)
-* sends cookie only when session really created
-* session id rotation (anti session hijacking), based on time and/or number of
+- sends cookie only when session really created
+- session id rotation (anti session hijacking), based on time and/or number of
   requests
-* configurable:
-* unlike PHP native mechanism, you don't have to use cron or resource-consuming
+- configurable:
+- unlike PHP native mechanism, you don't have to use cron or resource-consuming
   100% garbage collecting probability to ensure sessions are removed exactly
   after specified time
-* convention over configuration - possible to configure user-defined stores, listeners (observers),
+- convention over configuration - possible to configure user-defined stores, listeners (observers),
   entropy callback and fingerprint generators, but all of them have defaults set out-of-the-box
-* 100% independent from insecure native PHP session extension
+- 100% independent from insecure native PHP session extension
 
 [![Build Status](https://travis-ci.org/sobstel/sesshin.png?branch=master)](https://travis-ci.org/sobstel/sesshin)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/sobstel/sesshin/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/sobstel/sesshin/?branch=master)
@@ -74,17 +74,17 @@ $session->regenerateId();
 ### Listen special events
 
 ```php
-use Sesshin\Event;
+use Sesshin\Event\Event;
 
-$eventEmitter = $session->getEventEmitter();
+$eventEmitter = $session->geEmitter();
 
-$eventEmitter->addListener(Event::NO_DATA_OR_EXPIRED, function(Event $event) {
+$eventEmitter->addListener('sesshin.no_data_or_expired', function(Event $event) {
   die('Session expired or session adoption attack!');
 });
-$eventEmitter->addListener(Event::NO_DATA_OR_EXPIRED, function(Event $event) {
+$eventEmitter->addListener('sesshin.expired', function(Event $event) {
   die(sprintf('Session %s expired!', $session->getId()));
 });
-$eventEmitter->addListener(Event::INVALID_FINGERPRINT, function(Event $event) {
+$eventEmitter->addListener('sesshin.invalid_fingerprint', function(Event $event) {
   die('Invalid fingerprint, possible attack!');
 });
 ```
@@ -102,7 +102,7 @@ $userSession->login(123);
 
 if ($userSession->isLogged()) {
   echo sprintf('User %s is logged', $userSession->getUserId());
-  
+
   // Or if you have some kind of UserRepository class, which can be used to fetch user data
   $user = UserRepository::find($userSession->getUserId());
   echo sprintf('User %s is logged', $user->getUsername());
