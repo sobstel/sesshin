@@ -11,7 +11,7 @@
         public $session;
         protected $temp_dir;
 
-        function setUp()
+        function setUp(): void
         {
             $this->temp_dir = __DIR__.'/temp';
             $this->session = new Session(new FileStore($this->temp_dir));

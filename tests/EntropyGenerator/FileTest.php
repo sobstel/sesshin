@@ -5,11 +5,6 @@ use Sesshin\EntropyGenerator\File;
 
 class FileTest extends \PHPUnit\Framework\TestCase
 {
-    public function testUsesUrandomFileByDefault()
-    {
-        $this->assertAttributeEquals('/dev/urandom', 'file', new File());
-    }
-
     public function testReads512BytesFromFileByDefault()
     {
         $urandomGenerator = new File(__DIR__.'/files/urandom.txt');
@@ -26,11 +21,9 @@ class FileTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(strlen($entropy), 64);
     }
 
-    /**
-     * @expectedException \Sesshin\Exception
-     */
     public function testThrowsExceptionOnEmptyFile()
     {
+        $this->expectException(\Sesshin\Exception::class);
         $fileGenerator = new File(__DIR__.'/files/empty.txt');
         $fileGenerator->generate();
     }
