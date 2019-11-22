@@ -71,7 +71,7 @@ $session->setIdRequestsLimit(10);
 $session->regenerateId();
 ```
 
-### Listen special events
+### Listen to special events
 
 ```php
 use Sesshin\Event\Event;
@@ -82,7 +82,7 @@ $eventEmitter->addListener('sesshin.no_data_or_expired', function(Event $event) 
   die('Session expired or session adoption attack!');
 });
 $eventEmitter->addListener('sesshin.expired', function(Event $event) {
-  die(sprintf('Session %s expired!', $session->getId()));
+  die(sprintf('Session %s expired!', $event->getSession()->getId()));
 });
 $eventEmitter->addListener('sesshin.invalid_fingerprint', function(Event $event) {
   die('Invalid fingerprint, possible attack!');
